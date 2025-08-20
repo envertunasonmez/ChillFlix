@@ -12,4 +12,7 @@ class StringConstants {
   static const String topTenSeries = 'Top 10 Diziler';
   static const String topTenFilms = 'Top 10 Filmler';
   static const String newAndPopular = 'Yeni ve Popüler';
+  static const String profile = 'Profil';
+  static const String home = 'Ana Sayfa';
+  static const String remindMe = 'Bana Hatırlat';
 }
