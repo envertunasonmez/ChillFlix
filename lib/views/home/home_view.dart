@@ -6,6 +6,7 @@ import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:chillflix_app/views/home/widgets/appbar_icon_buttons.dart';
 import 'package:chillflix_app/views/home/widgets/category_buttons.dart';
 import 'package:chillflix_app/views/home/widgets/banner_action_buttons.dart';
+import 'package:chillflix_app/product/widgets/custom_app_bar.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -16,7 +17,17 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: ColorConstants.blackColor,
-      appBar: _buildAppBar(size),
+
+      /// ✅ CustomAppBar kullanımı
+      appBar: CustomAppBar(
+        title: 'Tuna için',
+        actions: [
+          AppBarIconButton(icon: Icons.cast, onPressed: () {}),
+          AppBarIconButton(icon: Icons.download, onPressed: () {}),
+          AppBarIconButton(icon: Icons.search, onPressed: () {}),
+        ],
+      ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,25 +79,6 @@ class HomeView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppBar(Size size) {
-    return AppBar(
-      backgroundColor: ColorConstants.blackColor,
-      title: Text(
-        'Tuna için',
-        style: AppTextStyles.appbarStyle(
-          fontSize: size.width * 0.06,
-          color: ColorConstants.whiteColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      actions: [
-        AppBarIconButton(icon: Icons.cast, onPressed: () {}),
-        AppBarIconButton(icon: Icons.download, onPressed: () {}),
-        AppBarIconButton(icon: Icons.search, onPressed: () {}),
-      ],
     );
   }
 }
