@@ -7,4 +7,9 @@ class StringConstants {
   static const String onlyChillflix = "Sadece Chillflix'te";
   static const String mostWanted = 'En Çok Arananlar';
   static const String seeAll = 'Tümünü Görüntüle';
+  static const String comingSoon = 'Çok Yakında';
+  static const String watchingEveryoneThese = 'Herkes Bunları İzliyor';
+  static const String topTenSeries = 'Top 10 Diziler';
+  static const String topTenFilms = 'Top 10 Filmler';
+  static const String newAndPopular = 'Yeni ve Popüler';
 }
