@@ -15,70 +15,87 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      backgroundColor: ColorConstants.blackColor,
-
-      /// ✅ CustomAppBar kullanımı
-      appBar: CustomAppBar(
-        title: 'Tuna için',
-        actions: [
-          AppBarIconButton(icon: Icons.cast, onPressed: () {}),
-          AppBarIconButton(icon: Icons.download, onPressed: () {}),
-          AppBarIconButton(icon: Icons.search, onPressed: () {}),
-        ],
-      ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// 🔹 Üst kısım (Kategori + Banner) → Daha geniş padding
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 12),
-                  _CategoryRow(size: size),
-                  SizedBox(height: size.height * 0.02),
-                  _BannerWidget(size: size),
-                ],
-              ),
-            ),
-
-            SizedBox(height: size.height * 0.02),
-
-            /// 🔹 Alt bölümler (Daha az padding)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SectionTitle(title: StringConstants.mostWanted, size: size),
-                  SizedBox(height: size.height * 0.015),
-                  _HorizontalMovieList(
-                      size: size, itemCount: 10, itemWidthFactor: 0.30),
-                  SizedBox(height: size.height * 0.02),
-                  _SectionTitle(
-                      title: StringConstants.onlyChillflix, size: size),
-                  SizedBox(height: size.height * 0.015),
-                  _HorizontalMovieList(
-                      size: size,
-                      itemCount: 10,
-                      itemWidthFactor: 0.50,
-                      heightFactor: 0.32),
-                  SizedBox(height: size.height * 0.02),
-                  _SectionTitleWithAction(
-                      title: StringConstants.myList, size: size),
-                  SizedBox(height: size.height * 0.015),
-                  _HorizontalMovieList(
-                      size: size, itemCount: 8, itemWidthFactor: 0.30),
-                ],
-              ),
-            ),
+    // ✅ Scaffold'ı kaldırdık, sadece Column döndürüyoruz
+    return Column(
+      children: [
+        /// ✅ CustomAppBar kullanımı
+        CustomAppBar(
+          title: 'Tuna için',
+          actions: [
+            AppBarIconButton(icon: Icons.cast, onPressed: () {}),
+            AppBarIconButton(icon: Icons.download, onPressed: () {}),
+            AppBarIconButton(icon: Icons.search, onPressed: () {}),
           ],
         ),
-      ),
+
+        /// ✅ İçerik kısmı Expanded içine aldık
+        Expanded(
+          child: NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (notification) {
+              notification.disallowIndicator();
+              return true;
+            },
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// 🔹 Üst kısım (Kategori + Banner) → Daha geniş padding
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        _CategoryRow(size: size),
+                        SizedBox(height: size.height * 0.02),
+                        _BannerWidget(size: size),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * 0.02),
+
+                  /// 🔹 Alt bölümler (Daha az padding)
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.02),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _SectionTitle(
+                            title: StringConstants.mostWanted, size: size),
+                        SizedBox(height: size.height * 0.015),
+                        _HorizontalMovieList(
+                            size: size, itemCount: 10, itemWidthFactor: 0.30),
+                        SizedBox(height: size.height * 0.02),
+                        _SectionTitle(
+                            title: StringConstants.onlyChillflix, size: size),
+                        SizedBox(height: size.height * 0.015),
+                        _HorizontalMovieList(
+                            size: size,
+                            itemCount: 10,
+                            itemWidthFactor: 0.50,
+                            heightFactor: 0.32),
+                        SizedBox(height: size.height * 0.02),
+                        _SectionTitleWithAction(
+                            title: StringConstants.myList, size: size),
+                        SizedBox(height: size.height * 0.015),
+                        _HorizontalMovieList(
+                            size: size, itemCount: 8, itemWidthFactor: 0.30),
+
+                        /// ✅ Alt kısımda biraz boşluk bıraktık (navbar için)
+                        SizedBox(height: size.height * 0.02),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -92,14 +109,21 @@ class _CategoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CategoryButtons(text: StringConstants.series, onPressed: () {}),
+        Flexible(
+          child:
+              CategoryButtons(text: StringConstants.series, onPressed: () {}),
+        ),
         SizedBox(width: size.width * 0.02),
-        CategoryButtons(text: StringConstants.films, onPressed: () {}),
+        Flexible(
+          child: CategoryButtons(text: StringConstants.films, onPressed: () {}),
+        ),
         SizedBox(width: size.width * 0.02),
-        CategoryButtons(
-          text: StringConstants.categories,
-          icon: Icons.keyboard_arrow_down,
-          onPressed: () {},
+        Flexible(
+          child: CategoryButtons(
+            text: StringConstants.categories,
+            icon: Icons.keyboard_arrow_down,
+            onPressed: () {},
+          ),
         ),
       ],
     );
@@ -168,15 +192,27 @@ class _SectionTitleWithAction extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _SectionTitle(title: title, size: size),
+        Expanded(
+          child: _SectionTitle(title: title, size: size),
+        ),
         InkWell(
           onTap: () => debugPrint("Tümünü Görüntüle tıklandı"),
           child: Row(
-            children: const [
-              Text(StringConstants.seeAll,
-                  style: TextStyle(color: Colors.white)),
-              SizedBox(width: 4),
-              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                StringConstants.seeAll,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: size.width * 0.035,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: size.width * 0.04,
+                color: Colors.white,
+              ),
             ],
           ),
         ),

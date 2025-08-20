@@ -1,4 +1,5 @@
 import 'package:chillflix_app/views/splash/splash_view.dart';
+import 'package:chillflix_app/main_wrapper.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       darkTheme: ThemeData.dark(),
       home: const SplashView(),
+      routes: {
+        '/main': (context) => const MainWrapper(),
+      },
     );
   }
 }
