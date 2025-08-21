@@ -44,13 +44,35 @@ class DiscoverView extends StatelessWidget {
               _buildCategoryList(context, state),
               const SizedBox(height: 16),
               Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: List.generate(
-                      state.categories.length,
-                      (index) =>
-                          _buildFilmList(context, index, state.selectedIndex),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollUpdateNotification) {
+                      final cubit = context.read<DiscoverCubit>();
+                      for (int i = 0; i < _categoryKeys.length; i++) {
+                        final keyContext = _categoryKeys[i].currentContext;
+                        if (keyContext != null) {
+                          final box =
+                              keyContext.findRenderObject() as RenderBox;
+                          final position = box.localToGlobal(Offset.zero).dy;
+                          if (position > 0 && position < 200) {
+                            if (cubit.state.selectedIndex != i) {
+                              cubit.selectCategory(i);
+                            }
+                            break;
+                          }
+                        }
+                      }
+                    }
+                    return false;
+                  },
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      children: List.generate(
+                        state.categories.length,
+                        (index) =>
+                            _buildFilmList(context, index, state.selectedIndex),
+                      ),
                     ),
                   ),
                 ),
@@ -136,7 +158,6 @@ class DiscoverView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Kategori başlığı
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
@@ -148,7 +169,6 @@ class DiscoverView extends StatelessWidget {
               ),
             ),
           ),
-          // Film kartları
           ...List.generate(
             5,
             (index) => _buildFilmCard(index, categoryIndex),
