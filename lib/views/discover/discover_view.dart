@@ -127,7 +127,6 @@ class DiscoverView extends StatelessWidget {
 
   Widget _buildFilmList(
       BuildContext context, int categoryIndex, int selectedIndex) {
-    bool isComingSoon = categoryIndex == 0;
     final category =
         context.read<DiscoverCubit>().state.categories[categoryIndex];
 
