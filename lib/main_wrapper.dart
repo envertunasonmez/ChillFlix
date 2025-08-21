@@ -17,7 +17,7 @@ class _MainWrapperState extends State<MainWrapper> {
   // Farklı ekranlarınızı buraya ekleyin
   final List<Widget> _screens = [
     const HomeView(),
-    const DiscoverView(),
+     DiscoverView(),
   ];
 
   void _onTabTapped(int index) {
