@@ -15,4 +15,8 @@ class StringConstants {
   static const String profile = 'Profil';
   static const String home = 'Ana Sayfa';
   static const String remindMe = 'Bana Hatırlat';
+  static const String likedSeriesAndFilms = 'Beğendiğiniz Dizi ve Filmler';
+  static const String notifications = 'Bildirimler';
+  static const String downloads = 'İndirilenler';
+  static const String share = 'Paylaş';
 }
