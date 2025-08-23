@@ -143,47 +143,18 @@ class _ProfileBottomSheet extends StatelessWidget {
   }
 
   void _showLanguageSelector(BuildContext context) {
-    final languages = [
-      {'locale': const Locale('tr'), 'label': S.of(context).turkish},
-      {'locale': const Locale('en'), 'label': S.of(context).english},
-    ];
-
     showDialog(
       context: context,
-      builder: (dialogContext) {
-        Widget languageButton(Locale locale, String label) {
-          return GestureDetector(
-            onTap: () {
-              context.read<LocaleCubit>().setLocale(locale);
-              Navigator.pop(dialogContext); 
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              color: Colors.transparent,
-              child: Center(
-                child: Text(
-                  label,
-                  style: AppTextStyles.bodyStyle(
-                    color: ColorConstants.redColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-
+      builder: (_) {
         return AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.black, // dialog arka planı siyah
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16), // köşeler dialog ile aynı
           ),
-          titlePadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero, // title padding sıfır
           title: Container(
             decoration: BoxDecoration(
-              color: ColorConstants.redColor,
+              color: ColorConstants.redColor, // üst bar kırmızı
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -192,7 +163,7 @@ class _ProfileBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Center(
               child: Text(
-                S.of(context).languageSelection,
+                "Dil Seçimi",
                 style: AppTextStyles.bodyStyle(
                   color: ColorConstants.blackColor,
                   fontWeight: FontWeight.w900,
@@ -204,10 +175,51 @@ class _ProfileBottomSheet extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ...languages.map((lang) => languageButton(
-                    lang['locale'] as Locale,
-                    lang['label'] as String,
-                  )),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    context.read<LocaleCubit>().setLocale(const Locale('tr'));
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    color: Colors.transparent,
+                    child: Text(
+                      "Türkçe",
+                      style: AppTextStyles.bodyStyle(
+                        color: ColorConstants.redColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    context.read<LocaleCubit>().setLocale(const Locale('en'));
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    color: Colors.transparent,
+                    child: Text(
+                      "English",
+                      style: AppTextStyles.bodyStyle(
+                        color: ColorConstants.redColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         );
