@@ -1,4 +1,4 @@
-import 'package:chillflix_app/product/constants/string_constants.dart';
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
@@ -55,7 +55,7 @@ class LikedMoviesList extends StatelessWidget {
                           size: 16,
                           color: ColorConstants.whiteColor,
                         ),
-                        label: Text(StringConstants.share,
+                        label: Text(S.of(context).share,
                             style: AppTextStyles.buttonStyle()),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,

@@ -1,6 +1,7 @@
-import 'package:chillflix_app/product/constants/string_constants.dart';
+import 'package:chillflix_app/cubit/locale/locale_cubit.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
@@ -11,6 +12,7 @@ import 'package:chillflix_app/views/profile/widgets/liked_movies_list.dart';
 import 'package:chillflix_app/views/profile/widgets/notification_item.dart';
 import 'package:chillflix_app/views/profile/widgets/notification_row.dart';
 import 'package:chillflix_app/views/profile/widgets/profile_header.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -40,7 +42,7 @@ class ProfileView extends StatelessWidget {
             const DownloadedRow(),
             const SizedBox(height: 32),
             Text(
-              StringConstants.likedSeriesAndFilms,
+              S.of(context).likedSeriesAndFilms,
               style: AppTextStyles.bodyStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -73,13 +75,37 @@ class _CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
-      title: "Benim Netfilix'im",
+      title: S.of(context).myChillflix,
       actions: [
         AppBarIconButton(icon: Icons.cast, onPressed: () {}),
         AppBarIconButton(icon: Icons.search, onPressed: () {}),
         AppBarIconButton(
             icon: Icons.menu, onPressed: () => _openBottomSheet(context)),
       ],
+    );
+  }
+}
+
+class _BottomSheetTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback? onTap;
+
+  const _BottomSheetTile({
+    required this.icon,
+    required this.title,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: ColorConstants.whiteColor),
+      title: Text(
+        title,
+        style: AppTextStyles.bodyStyle(color: ColorConstants.whiteColor),
+      ),
+      onTap: onTap ?? () => Navigator.pop(context),
     );
   }
 }
@@ -93,43 +119,58 @@ class _ProfileBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           _BottomSheetTile(
             icon: Icons.settings,
-            title: "Ayarlar",
+            title: S.of(context).settings,
           ),
           _BottomSheetTile(
             icon: Icons.person,
-            title: "Profilim",
+            title: S.of(context).myProfile,
+          ),
+          _BottomSheetTile(
+            icon: Icons.language,
+            title: S.of(context).changeLanguage,
+            onTap: () => _showLanguageSelector(context),
           ),
           _BottomSheetTile(
             icon: Icons.logout,
-            title: "Çıkış Yap",
+            title: S.of(context).logOut,
           ),
         ],
       ),
     );
   }
-}
 
-class _BottomSheetTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _BottomSheetTile({
-    required this.icon,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: ColorConstants.whiteColor),
-      title: Text(
-        title,
-        style: AppTextStyles.bodyStyle(color: ColorConstants.whiteColor),
-      ),
-      onTap: () => Navigator.pop(context),
+  void _showLanguageSelector(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Dil Seçimi"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text("Türkçe"),
+                onTap: () {
+                  context.read<LocaleCubit>().setLocale(const Locale('tr'));
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text("English"),
+                onTap: () {
+                  context.read<LocaleCubit>().setLocale(const Locale('en'));
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

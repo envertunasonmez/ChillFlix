@@ -1,9 +1,18 @@
-import 'package:chillflix_app/views/splash/splash_view.dart';
-import 'package:chillflix_app/main_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'generated/l10n.dart';
+import 'views/splash/splash_view.dart';
+import 'main_wrapper.dart';
+import 'cubit/locale/locale_cubit.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (_) => LocaleCubit(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,14 +20,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ChillFlix',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(),
-      home: const SplashView(),
-      routes: {
-        '/main': (context) => const MainWrapper(),
+    return BlocBuilder<LocaleCubit, Locale>(
+      builder: (context, locale) {
+        return MaterialApp(
+          title: 'ChillFlix',
+          debugShowCheckedModeBanner: false,
+          locale: locale,
+          supportedLocales: S.delegate.supportedLocales,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData.dark(),
+          home: const SplashView(),
+          routes: {
+            '/main': (context) => const MainWrapper(),
+          },
+        );
       },
     );
   }

@@ -1,4 +1,4 @@
-import 'package:chillflix_app/product/constants/string_constants.dart';
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
 
@@ -40,21 +40,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
             _buildNavItem(
               context: context,
               icon: Icons.home,
-              label: StringConstants.home,
+              label: S.of(context).home,
               index: 0,
               size: size,
             ),
             _buildNavItem(
               context: context,
               icon: Icons.search,
-              label: StringConstants.newAndPopular,
+              label: S.of(context).newAndPopular,
               index: 1,
               size: size,
             ),
             _buildNavItem(
               context: context,
               icon: Icons.person,
-              label: StringConstants.profile,
+              label: S.of(context).profile,
               index: 2,
               size: size,
             ),

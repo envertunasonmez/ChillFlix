@@ -1,6 +1,6 @@
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
-import 'package:chillflix_app/product/constants/string_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 
 class BannerActionButtons extends StatelessWidget {
@@ -34,7 +34,7 @@ class BannerActionButtons extends StatelessWidget {
               size: 28,
             ),
             label: Text(
-              StringConstants.play,
+              S.of(context).play,
               style:
                   AppTextStyles.buttonStyle(color: ColorConstants.blackColor),
             ),
@@ -57,7 +57,7 @@ class BannerActionButtons extends StatelessWidget {
               size: 28,
             ),
             label: Text(
-              StringConstants.myList,
+              S.of(context).myList,
               style:
                   AppTextStyles.buttonStyle(color: ColorConstants.whiteColor),
             ),

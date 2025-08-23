@@ -1,8 +1,10 @@
-import 'package:chillflix_app/product/constants/string_constants.dart';
 import 'package:flutter/material.dart';
-import 'circle_icon.dart';
+
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
+
+import 'package:chillflix_app/views/profile/widgets/circle_icon.dart';
 
 class DownloadedRow extends StatelessWidget {
   const DownloadedRow({super.key});
@@ -17,7 +19,7 @@ class DownloadedRow extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Text(
-          StringConstants.downloads,
+          S.of(context).downloads,
           style: AppTextStyles.bodyStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
