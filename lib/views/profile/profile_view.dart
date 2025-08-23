@@ -143,30 +143,71 @@ class _ProfileBottomSheet extends StatelessWidget {
   }
 
   void _showLanguageSelector(BuildContext context) {
+    final languages = [
+      {'locale': const Locale('tr'), 'label': S.of(context).turkish},
+      {'locale': const Locale('en'), 'label': S.of(context).english},
+    ];
+
     showDialog(
       context: context,
-      builder: (_) {
+      builder: (dialogContext) {
+        Widget languageButton(Locale locale, String label) {
+          return GestureDetector(
+            onTap: () {
+              context.read<LocaleCubit>().setLocale(locale);
+              Navigator.pop(dialogContext); 
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              color: Colors.transparent,
+              child: Center(
+                child: Text(
+                  label,
+                  style: AppTextStyles.bodyStyle(
+                    color: ColorConstants.redColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
         return AlertDialog(
-          title: const Text("Dil Seçimi"),
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          titlePadding: EdgeInsets.zero,
+          title: Container(
+            decoration: BoxDecoration(
+              color: ColorConstants.redColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: Text(
+                S.of(context).languageSelection,
+                style: AppTextStyles.bodyStyle(
+                  color: ColorConstants.blackColor,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: const Text("Türkçe"),
-                onTap: () {
-                  context.read<LocaleCubit>().setLocale(const Locale('tr'));
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text("English"),
-                onTap: () {
-                  context.read<LocaleCubit>().setLocale(const Locale('en'));
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-              ),
+              ...languages.map((lang) => languageButton(
+                    lang['locale'] as Locale,
+                    lang['label'] as String,
+                  )),
             ],
           ),
         );
