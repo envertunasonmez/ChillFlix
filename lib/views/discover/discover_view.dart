@@ -1,3 +1,4 @@
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/discover/discover_view_cubit.dart';
@@ -6,7 +7,6 @@ import 'package:chillflix_app/views/discover/widgets/category_list.dart';
 import 'package:chillflix_app/views/discover/widgets/film_list.dart';
 import 'package:chillflix_app/product/widgets/custom_app_bar.dart';
 import 'package:chillflix_app/views/home/widgets/appbar_icon_buttons.dart';
-import 'package:chillflix_app/product/constants/string_constants.dart';
 
 class DiscoverView extends StatelessWidget {
   DiscoverView({super.key});
@@ -35,7 +35,7 @@ class DiscoverView extends StatelessWidget {
           return Column(
             children: [
               CustomAppBar(
-                title: StringConstants.newAndPopular,
+                title: S.of(context).newAndPopular,
                 actions: [
                   AppBarIconButton(icon: Icons.cast, onPressed: () {}),
                   AppBarIconButton(icon: Icons.download, onPressed: () {}),

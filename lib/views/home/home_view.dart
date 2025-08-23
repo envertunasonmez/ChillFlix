@@ -1,7 +1,7 @@
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
-import 'package:chillflix_app/product/constants/string_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:chillflix_app/views/home/widgets/appbar_icon_buttons.dart';
 import 'package:chillflix_app/views/home/widgets/category_buttons.dart';
@@ -65,13 +65,13 @@ class HomeView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _SectionTitle(
-                            title: StringConstants.mostWanted, size: size),
+                            title: S.of(context).mostWanted, size: size),
                         SizedBox(height: size.height * 0.015),
                         _HorizontalMovieList(
                             size: size, itemCount: 10, itemWidthFactor: 0.30),
                         SizedBox(height: size.height * 0.02),
                         _SectionTitle(
-                            title: StringConstants.onlyChillflix, size: size),
+                            title: S.of(context).onlyChillflix, size: size),
                         SizedBox(height: size.height * 0.015),
                         _HorizontalMovieList(
                             size: size,
@@ -80,7 +80,7 @@ class HomeView extends StatelessWidget {
                             heightFactor: 0.32),
                         SizedBox(height: size.height * 0.02),
                         _SectionTitleWithAction(
-                            title: StringConstants.myList, size: size),
+                            title: S.of(context).myList, size: size),
                         SizedBox(height: size.height * 0.015),
                         _HorizontalMovieList(
                             size: size, itemCount: 8, itemWidthFactor: 0.30),
@@ -110,17 +110,16 @@ class _CategoryRow extends StatelessWidget {
     return Row(
       children: [
         Flexible(
-          child:
-              CategoryButtons(text: StringConstants.series, onPressed: () {}),
+          child: CategoryButtons(text: S.of(context).series, onPressed: () {}),
         ),
         SizedBox(width: size.width * 0.02),
         Flexible(
-          child: CategoryButtons(text: StringConstants.films, onPressed: () {}),
+          child: CategoryButtons(text: S.of(context).films, onPressed: () {}),
         ),
         SizedBox(width: size.width * 0.02),
         Flexible(
           child: CategoryButtons(
-            text: StringConstants.categories,
+            text: S.of(context).categories,
             icon: Icons.keyboard_arrow_down,
             onPressed: () {},
           ),
@@ -201,7 +200,7 @@ class _SectionTitleWithAction extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                StringConstants.seeAll,
+                S.of(context).seeAll,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: size.width * 0.035,
