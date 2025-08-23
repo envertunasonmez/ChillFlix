@@ -24,21 +24,21 @@ class ProfileView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _CustomAppBar(),
-            SizedBox(height: 24),
-            Center(child: ProfileHeader()),
-            SizedBox(height: 24),
-            NotificationRow(),
-            SizedBox(height: 16),
+            const _CustomAppBar(),
+            const SizedBox(height: 24),
+            const Center(child: ProfileHeader()),
+            const SizedBox(height: 24),
+            const NotificationRow(),
+            const SizedBox(height: 16),
             NotificationItem(
               imagePath: AssetsConstants.banner,
               title: "Film Başlığı",
               genre: "Aksiyon, Macera",
               date: "20 Ağu",
             ),
-            SizedBox(height: 32),
-            DownloadedRow(),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
+            const DownloadedRow(),
+            const SizedBox(height: 32),
             Text(
               StringConstants.likedSeriesAndFilms,
               style: AppTextStyles.bodyStyle(
@@ -47,8 +47,8 @@ class ProfileView extends StatelessWidget {
                 color: ColorConstants.whiteColor,
               ),
             ),
-            SizedBox(height: 16),
-            LikedMoviesList(),
+            const SizedBox(height: 16),
+            const LikedMoviesList(),
           ],
         ),
       ),
@@ -59,6 +59,17 @@ class ProfileView extends StatelessWidget {
 class _CustomAppBar extends StatelessWidget {
   const _CustomAppBar();
 
+  void _openBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: ColorConstants.blackColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => const _ProfileBottomSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
@@ -66,8 +77,59 @@ class _CustomAppBar extends StatelessWidget {
       actions: [
         AppBarIconButton(icon: Icons.cast, onPressed: () {}),
         AppBarIconButton(icon: Icons.search, onPressed: () {}),
-        AppBarIconButton(icon: Icons.menu, onPressed: () {}),
+        AppBarIconButton(
+            icon: Icons.menu, onPressed: () => _openBottomSheet(context)),
       ],
+    );
+  }
+}
+
+class _ProfileBottomSheet extends StatelessWidget {
+  const _ProfileBottomSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          _BottomSheetTile(
+            icon: Icons.settings,
+            title: "Ayarlar",
+          ),
+          _BottomSheetTile(
+            icon: Icons.person,
+            title: "Profilim",
+          ),
+          _BottomSheetTile(
+            icon: Icons.logout,
+            title: "Çıkış Yap",
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BottomSheetTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _BottomSheetTile({
+    required this.icon,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: ColorConstants.whiteColor),
+      title: Text(
+        title,
+        style: AppTextStyles.bodyStyle(color: ColorConstants.whiteColor),
+      ),
+      onTap: () => Navigator.pop(context),
     );
   }
 }
