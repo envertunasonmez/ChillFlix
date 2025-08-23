@@ -20,7 +20,11 @@ class CategoryButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: ColorConstants.greyColor,
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: const BorderSide(color: ColorConstants.greyColor),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       onPressed: onPressed,
