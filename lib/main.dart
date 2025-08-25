@@ -5,11 +5,23 @@ import 'generated/l10n.dart';
 import 'views/splash/splash_view.dart';
 import 'main_wrapper.dart';
 import 'cubit/locale/locale_cubit.dart';
+import 'views/auth/login/login_view.dart';
+import 'views/auth/register/register_view.dart';
+import 'cubit/auth/auth_cubit.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
-    BlocProvider(
-      create: (_) => LocaleCubit(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => LocaleCubit()),
+        BlocProvider(create: (_) => AuthCubit()), // ✅ Artık globalde sağlanıyor
+      ],
       child: const MyApp(),
     ),
   );
@@ -38,6 +50,8 @@ class MyApp extends StatelessWidget {
           home: const SplashView(),
           routes: {
             '/main': (context) => const MainWrapper(),
+            '/login': (context) => const LoginView(),
+            '/register': (context) => const RegisterView(),
           },
         );
       },
