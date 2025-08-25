@@ -1,3 +1,4 @@
+import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
 import 'package:chillflix_app/cubit/locale/locale_cubit.dart';
 import 'package:flutter/material.dart';
 
@@ -133,10 +134,14 @@ class _ProfileBottomSheet extends StatelessWidget {
             title: S.of(context).changeLanguage,
             onTap: () => _showLanguageSelector(context),
           ),
-          _BottomSheetTile(
-            icon: Icons.logout,
-            title: S.of(context).logOut,
-          ),
+         _BottomSheetTile(
+  icon: Icons.logout,
+  title: S.of(context).logOut,
+  onTap: () {
+    context.read<AuthCubit>().signOut(context);
+  },
+),
+
         ],
       ),
     );
