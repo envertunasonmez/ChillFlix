@@ -1,5 +1,6 @@
 import 'package:chillflix_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
@@ -7,6 +8,9 @@ import 'package:chillflix_app/views/home/widgets/appbar_icon_buttons.dart';
 import 'package:chillflix_app/views/home/widgets/category_buttons.dart';
 import 'package:chillflix_app/views/home/widgets/banner_action_buttons.dart';
 import 'package:chillflix_app/product/widgets/custom_app_bar.dart';
+import 'package:chillflix_app/cubit/movies/movies_cubit.dart';
+import 'package:chillflix_app/product/widgets/film_card.dart';
+import 'package:chillflix_app/product/models/movie_model.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -64,26 +68,20 @@ class HomeView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionTitle(
-                            title: S.of(context).mostWanted, size: size),
-                        SizedBox(height: size.height * 0.015),
-                        _HorizontalMovieList(
-                            size: size, itemCount: 10, itemWidthFactor: 0.30),
-                        SizedBox(height: size.height * 0.02),
-                        _SectionTitle(
-                            title: S.of(context).onlyChillflix, size: size),
+                        _SectionTitle(title: 'Most Wanted', size: size),
                         SizedBox(height: size.height * 0.015),
                         _HorizontalMovieList(
                             size: size,
-                            itemCount: 10,
-                            itemWidthFactor: 0.50,
-                            heightFactor: 0.32),
+                            category: 'most_wanted',
+                            itemWidthFactor: 0.30),
                         SizedBox(height: size.height * 0.02),
-                        _SectionTitleWithAction(
-                            title: S.of(context).myList, size: size),
+                        _SectionTitle(title: 'Only on ChillFlix', size: size),
                         SizedBox(height: size.height * 0.015),
                         _HorizontalMovieList(
-                            size: size, itemCount: 8, itemWidthFactor: 0.30),
+                            size: size,
+                            category: 'only_on_chillflix',
+                            itemWidthFactor: 0.50,
+                            heightFactor: 0.32),
 
                         /// ✅ Alt kısımda biraz boşluk bıraktık (navbar için)
                         SizedBox(height: size.height * 0.02),
@@ -224,38 +222,96 @@ class _SectionTitleWithAction extends StatelessWidget {
 class _HorizontalMovieList extends StatelessWidget {
   const _HorizontalMovieList({
     required this.size,
-    required this.itemCount,
+    required this.category,
     required this.itemWidthFactor,
     this.heightFactor = 0.20,
   });
 
   final Size size;
-  final int itemCount;
+  final String category;
   final double itemWidthFactor;
   final double heightFactor;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: size.height * heightFactor,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: itemCount,
-        separatorBuilder: (_, __) => SizedBox(width: size.width * 0.03),
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => debugPrint("Film $index tıklandı"),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(size.width * 0.02),
-              child: Image.asset(
-                AssetsConstants.banner,
-                width: size.width * itemWidthFactor,
-                fit: BoxFit.cover,
-              ),
+    // Widget oluşturulduğunda filmleri yükle
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final moviesCubit = context.read<MoviesCubit>();
+
+      switch (category) {
+        case 'most_wanted':
+          moviesCubit.getMostWantedMovies();
+          break;
+        case 'only_on_chillflix':
+          moviesCubit.getOnlyOnChillflixMovies();
+          break;
+      }
+    });
+
+    return BlocBuilder<MoviesCubit, MoviesState>(
+      buildWhen: (previous, current) {
+        // Sadece bu kategori için state değişikliklerini dinle
+        if (current is MoviesLoaded && current.category == category) {
+          return true;
+        }
+        if (current is MoviesLoading && current.category == category) {
+          return true;
+        }
+        if (current is MoviesError) {
+          return true;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        if (state is MoviesLoading && state.category == category) {
+          return SizedBox(
+            height: size.height * heightFactor,
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white),
             ),
           );
-        },
-      ),
+        }
+
+        if (state is MoviesLoaded &&
+            state.category == category &&
+            state.movies.isNotEmpty) {
+          return SizedBox(
+            height: size.height * heightFactor,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.movies.length,
+              separatorBuilder: (_, __) => SizedBox(width: size.width * 0.03),
+              itemBuilder: (context, index) {
+                final movie = state.movies[index];
+                return FilmCard(
+                  movie: movie,
+                  width: size.width * itemWidthFactor,
+                  height: size.height * heightFactor,
+                  onTap: () => debugPrint("Film ${movie.title} tıklandı"),
+                  onListTap: () {
+                    context.read<MoviesCubit>().toggleUserList(
+                          movie.id,
+                          movie.title,
+                          movie.imageUrl,
+                        );
+                  },
+                );
+              },
+            ),
+          );
+        }
+
+        // Hata durumu veya boş liste
+        return SizedBox(
+          height: size.height * heightFactor,
+          child: const Center(
+            child: Text(
+              'Film bulunamadı',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
     );
   }
 }
