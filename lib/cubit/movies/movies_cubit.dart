@@ -1,3 +1,4 @@
+// movies_cubit.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../product/services/movie_service.dart';
@@ -9,106 +10,86 @@ part 'movies_state.dart';
 class MoviesCubit extends Cubit<MoviesState> {
   final MovieService _movieService = MovieService();
 
-  MoviesCubit() : super(MoviesInitial());
+  MoviesCubit() : super(const MoviesInitial());
 
-  // Most Wanted kategorisindeki filmleri getir
   Future<void> getMostWantedMovies() async {
-    emit(MoviesLoading(category: 'most_wanted'));
+    emit(state.copyWith(mostWantedLoading: true));
     try {
       final movies = await _movieService.getMoviesByCategory('most_wanted');
-      emit(MoviesLoaded(movies: movies, category: 'most_wanted'));
+      emit(state.copyWith(mostWantedMovies: movies, mostWantedLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), mostWantedLoading: false));
     }
   }
 
-  // Only on ChillFlix kategorisindeki filmleri getir
   Future<void> getOnlyOnChillflixMovies() async {
-    emit(MoviesLoading(category: 'only_on_chillflix'));
+    emit(state.copyWith(onlyOnChillflixLoading: true));
     try {
-      final movies =
-          await _movieService.getMoviesByCategory('only_on_chillflix');
-      emit(MoviesLoaded(movies: movies, category: 'only_on_chillflix'));
+      final movies = await _movieService.getMoviesByCategory('only_on_chillflix');
+      emit(state.copyWith(onlyOnChillflixMovies: movies, onlyOnChillflixLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), onlyOnChillflixLoading: false));
     }
   }
 
-  // Coming Soon kategorisindeki filmleri getir
   Future<void> getComingSoonMovies() async {
-    emit(MoviesLoading(category: 'coming_soon'));
+    emit(state.copyWith(comingSoonLoading: true));
     try {
       final movies = await _movieService.getMoviesByCategory('coming_soon');
-      emit(MoviesLoaded(movies: movies, category: 'coming_soon'));
+      emit(state.copyWith(comingSoonMovies: movies, comingSoonLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), comingSoonLoading: false));
     }
   }
 
-  // Everyone Watch These kategorisindeki filmleri getir
   Future<void> getEveryoneWatchTheseMovies() async {
-    emit(MoviesLoading(category: 'everyone_watch_these'));
+    emit(state.copyWith(everyoneWatchTheseLoading: true));
     try {
-      final movies =
-          await _movieService.getMoviesByCategory('everyone_watch_these');
-      emit(MoviesLoaded(movies: movies, category: 'everyone_watch_these'));
+      final movies = await _movieService.getMoviesByCategory('everyone_watch_these');
+      emit(state.copyWith(everyoneWatchTheseMovies: movies, everyoneWatchTheseLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), everyoneWatchTheseLoading: false));
     }
   }
 
-  // Top 10 filmleri getir
   Future<void> getTop10Movies() async {
-    emit(Top10Loading(type: 'movies'));
+    emit(state.copyWith(top10MoviesLoading: true));
     try {
       final movies = await _movieService.getTop10Movies();
-      emit(Top10Loaded(movies: movies, type: 'movies'));
+      emit(state.copyWith(top10Movies: movies, top10MoviesLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), top10MoviesLoading: false));
     }
   }
 
-  // Top 10 dizileri getir
   Future<void> getTop10Series() async {
-    emit(Top10Loading(type: 'series'));
+    emit(state.copyWith(top10SeriesLoading: true));
     try {
       final movies = await _movieService.getTop10Series();
-      emit(Top10Loaded(movies: movies, type: 'series'));
+      emit(state.copyWith(top10Series: movies, top10SeriesLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), top10SeriesLoading: false));
     }
   }
 
-  // Kullanıcının listesine film ekle/çıkar
-  Future<void> toggleUserList(
-      String movieId, String movieTitle, String movieImageUrl) async {
+  Future<void> toggleUserList(String movieId, String movieTitle, String movieImageUrl) async {
     try {
-      final success =
-          await _movieService.addToUserList(movieId, movieTitle, movieImageUrl);
-      if (success) {
-        // Film listesini güncelle
-        final currentState = state;
-        if (currentState is MoviesLoaded) {
-          emit(MoviesLoaded(movies: currentState.movies));
-        }
-      }
+      await _movieService.addToUserList(movieId, movieTitle, movieImageUrl);
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 
-  // Kullanıcının listesini getir
   Future<void> getUserList() async {
-    emit(UserListLoading());
+    emit(state.copyWith(userListLoading: true));
     try {
       final userList = await _movieService.getUserList();
-      emit(UserListLoaded(userList: userList));
+      emit(state.copyWith(userList: userList, userListLoading: false));
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), userListLoading: false));
     }
   }
 
-  // Film listem butonuna basılıp basılmadığını kontrol et
   Future<bool> isInUserList(String movieId) async {
     try {
       return await _movieService.isInUserList(movieId);
@@ -117,16 +98,12 @@ class MoviesCubit extends Cubit<MoviesState> {
     }
   }
 
-  // Kullanıcının listesinden film kaldır
   Future<void> removeFromUserList(String listId) async {
     try {
       final success = await _movieService.removeFromUserList(listId);
-      if (success) {
-        // Listeyi güncelle
-        getUserList();
-      }
+      if (success) getUserList();
     } catch (e) {
-      emit(MoviesError(message: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 }

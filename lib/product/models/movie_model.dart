@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Movie extends Equatable {
   final String id;
