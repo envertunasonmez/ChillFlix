@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'film_card.dart';
 
-class FilmList extends StatelessWidget {
+// ... (imports)
+
+class FilmList extends StatefulWidget {
   final ScrollController scrollController;
   final List<GlobalKey> categoryKeys;
   final List<Map<String, String>> categories;
@@ -16,17 +18,22 @@ class FilmList extends StatelessWidget {
   });
 
   @override
+  State<FilmList> createState() => _FilmListState();
+}
+
+class _FilmListState extends State<FilmList> {
+  @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {
-          for (int i = 0; i < categoryKeys.length; i++) {
-            final keyContext = categoryKeys[i].currentContext;
+          for (int i = 0; i < widget.categoryKeys.length; i++) {
+            final keyContext = widget.categoryKeys[i].currentContext;
             if (keyContext != null) {
               final box = keyContext.findRenderObject() as RenderBox;
               final position = box.localToGlobal(Offset.zero).dy;
               if (position > 0 && position < 200) {
-                onCategoryVisible(i);
+                widget.onCategoryVisible(i);
                 break;
               }
             }
@@ -35,14 +42,15 @@ class FilmList extends StatelessWidget {
         return false;
       },
       child: SingleChildScrollView(
-        controller: scrollController,
+        controller: widget.scrollController,
         child: Column(
           children: List.generate(
-            categories.length,
+            widget.categories.length,
             (index) => FilmCardSection(
-              key: categoryKeys[index],
-              category: categories[index],
+              key: widget.categoryKeys[index],
+              category: widget.categories[index],
               isComingSoon: index == 0,
+              categoryIndex: index,
             ),
           ),
         ),
