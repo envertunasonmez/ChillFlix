@@ -23,38 +23,66 @@ class MovieService {
     }
   }
 
-  /// 🔹 Top 10 Movies
   Future<List<Movie>> getTop10Movies() async {
     try {
+      print("🔍 Top10Movies çekiliyor: category='top_movie'");
+
       final query = await _firestore
           .collection('movies')
-          .where('type', isEqualTo: 'movie')
-          .orderBy('rating', descending: true)
-          .limit(10)
+          .where('category', isEqualTo: 'top_movie')
           .get();
 
-      return query.docs
+      print("📊 Bulunan doküman sayısı: ${query.docs.length}");
+
+      if (query.docs.isEmpty) {
+        print("⚠️ top_movie kategorisinde hiç doküman bulunamadı");
+      }
+
+      List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
+
+      print("🎬 Dönüştürülen film sayısı: ${movies.length}");
+
+      // Client-side sorting eğer rating field'ı varsa
+      movies.sort((a, b) => b.rating.compareTo(a.rating));
+
+      // İlk 10 tanesini al
+      return movies.take(10).toList();
     } catch (e) {
+      print("❌ Top10Movies hatası: $e");
       throw Exception("Top10 Movies alınamadı: $e");
     }
   }
 
-  /// 🔹 Top 10 Series
   Future<List<Movie>> getTop10Series() async {
     try {
+      print("🔍 Top10Series çekiliyor: category='top_series'");
+
       final query = await _firestore
           .collection('movies')
-          .where('type', isEqualTo: 'series')
-          .orderBy('rating', descending: true)
-          .limit(10)
+          .where('category', isEqualTo: 'top_series')
           .get();
 
-      return query.docs
+      print("📊 Bulunan doküman sayısı: ${query.docs.length}");
+
+      if (query.docs.isEmpty) {
+        print("⚠️ top_series kategorisinde hiç doküman bulunamadı");
+      }
+
+      List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
+
+      print("🎬 Dönüştürülen film sayısı: ${movies.length}");
+
+      // Client-side sorting eğer rating field'ı varsa
+      movies.sort((a, b) => b.rating.compareTo(a.rating));
+
+      // İlk 10 tanesini al
+      return movies.take(10).toList();
     } catch (e) {
+      print("❌ Top10Series hatası: $e");
       throw Exception("Top10 Series alınamadı: $e");
     }
   }
