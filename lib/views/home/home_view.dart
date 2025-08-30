@@ -91,7 +91,7 @@ class HomeView extends StatelessWidget {
 }
 
 class _CategoryRow extends StatelessWidget {
-  const _CategoryRow({super.key});
+  const _CategoryRow();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -117,7 +117,7 @@ class _CategoryRow extends StatelessWidget {
 }
 
 class _BannerWidget extends StatelessWidget {
-  const _BannerWidget({super.key});
+  const _BannerWidget();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -146,7 +146,7 @@ class _BannerWidget extends StatelessWidget {
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title, required this.size, super.key});
+  const _SectionTitle({required this.title, required this.size});
   final String title;
   final Size size;
 
@@ -169,7 +169,6 @@ class _MovieHorizontalList extends StatelessWidget {
     required this.size,
     required this.heightFactor,
     required this.itemWidthFactor,
-    super.key,
   });
 
   final String categoryKey;
