@@ -74,16 +74,13 @@ class MoviesCubit extends Cubit<MoviesState> {
   /// Film listeye ekle/çıkar ve sonucu döndür
   Future<bool> toggleUserList(String movieId, String movieTitle, String movieImageUrl) async {
     try {
-      print("toggleUserList başladı - movieId: $movieId");
       final result = await _movieService.addToUserList(movieId, movieTitle, movieImageUrl);
-      print("toggleUserList sonucu: $result");
       
       // User list'i otomatik güncelle
       await getUserList();
       
       return result;
     } catch (e) {
-      print("toggleUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString()));
       throw e;
     }
@@ -92,12 +89,9 @@ class MoviesCubit extends Cubit<MoviesState> {
   Future<void> getUserList() async {
     emit(state.copyWith(userListLoading: true, errorMessage: null));
     try {
-      print("getUserList başladı");
       final userList = await _movieService.getUserList();
-      print("getUserList tamamlandı, ${userList.length} film bulundu");
       emit(state.copyWith(userList: userList, userListLoading: false));
     } catch (e) {
-      print("getUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString(), userListLoading: false));
     }
   }
@@ -105,24 +99,19 @@ class MoviesCubit extends Cubit<MoviesState> {
   Future<bool> isInUserList(String movieId) async {
     try {
       final result = await _movieService.isInUserList(movieId);
-      print("isInUserList - movieId: $movieId, sonuç: $result");
       return result;
     } catch (e) {
-      print("isInUserList hatası: $e");
       return false;
     }
   }
 
   Future<void> removeFromUserList(String listId) async {
     try {
-      print("removeFromUserList başladı - listId: $listId");
       final success = await _movieService.removeFromUserList(listId);
       if (success) {
-        print("Film başarıyla kaldırıldı, user list güncelleniyor");
         await getUserList();
       }
     } catch (e) {
-      print("removeFromUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString()));
     }
   }

@@ -242,8 +242,6 @@ class _FilmCardState extends State<FilmCard> {
       final moviesCubit = context.read<MoviesCubit>();
 
       // Mevcut durumu al
-      final currentStatus = _isInUserList ?? false;
-      print("🎬 Mevcut durum: $currentStatus, Film: ${widget.movie.title}");
 
       // Toggle işlemi yap
       await moviesCubit.toggleUserList(
@@ -257,7 +255,6 @@ class _FilmCardState extends State<FilmCard> {
 
       // Yeni durumu kontrol et
       final newStatus = await moviesCubit.isInUserList(widget.movie.id);
-      print("🎬 Yeni durum: $newStatus");
 
       if (mounted) {
         setState(() {
@@ -279,7 +276,6 @@ class _FilmCardState extends State<FilmCard> {
         );
       }
     } catch (e) {
-      print("❌ Toggle hatası: $e");
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(

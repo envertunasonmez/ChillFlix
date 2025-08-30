@@ -254,7 +254,7 @@ class _MovieHorizontalList extends StatelessWidget {
                 movie: movie,
                 width: size.width * itemWidthFactor,
                 height: size.height * heightFactor,
-                onTap: () => debugPrint("Film ${movie.title} tıklandı"),
+                onTap: () {},
                 onListTap: () {
                   cubit.toggleUserList(movie.id, movie.title, movie.imageUrl);
                 },

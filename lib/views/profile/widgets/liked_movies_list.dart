@@ -22,9 +22,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesCubit, MoviesState>(
-      builder: (context, state) {
-        print("LikedMoviesList build - loading: ${state.userListLoading}, list length: ${state.userList.length}");
-        
+      builder: (context, state) {        
         if (state.userListLoading) {
           return SizedBox(
             height: 190,
@@ -145,8 +143,6 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
               final userListItem = state.userList[index];
               final cleanUrl = _cleanImageUrl(userListItem.movieImageUrl);
               
-              print("Rendering user list item: ${userListItem.movieTitle}");
-
               return _MovieListItem(
                 userListItem: userListItem,
                 cleanUrl: cleanUrl,

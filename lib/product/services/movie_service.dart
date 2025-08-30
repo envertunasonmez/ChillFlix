@@ -31,45 +31,38 @@ class MovieService {
 
   Future<List<Movie>> getTop10Movies() async {
     try {
-      print("Top10Movies çekiliyor: category='top_movie'");
 
       final query = await _firestore
           .collection('movies')
           .where('category', isEqualTo: 'top_movie')
           .get();
 
-      print("Bulunan doküman sayısı: ${query.docs.length}");
 
       if (query.docs.isEmpty) {
-        print("top_movie kategorisinde hiç doküman bulunamadı");
       }
 
       List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
 
-      print("Dönüştürülen film sayısı: ${movies.length}");
 
       // Client-side sorting
       movies.sort((a, b) => b.rating.compareTo(a.rating));
 
       return movies.take(10).toList();
     } catch (e) {
-      print("Top10Movies hatası: $e");
       throw Exception("Top10 Movies alınamadı: $e");
     }
   }
 
   Future<List<Movie>> getTop10Series() async {
     try {
-      print("Top10Series çekiliyor: category='top_series'");
 
       final query = await _firestore
           .collection('movies')
           .where('category', isEqualTo: 'top_series')
           .get();
 
-      print("Bulunan doküman sayısı: ${query.docs.length}");
 
       List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
@@ -79,7 +72,6 @@ class MovieService {
 
       return movies.take(10).toList();
     } catch (e) {
-      print("Top10Series hatası: $e");
       throw Exception("Top10 Series alınamadı: $e");
     }
   }
@@ -104,7 +96,6 @@ class MovieService {
       if (existingQuery.docs.isNotEmpty) {
         // Film zaten listede varsa kaldır
         await userListRef.doc(existingQuery.docs.first.id).delete();
-        print("Film listeden çıkarıldı: $movieTitle");
         return false; // Film çıkarıldı
       } else {
         // Film listede yoksa ekle
@@ -115,11 +106,9 @@ class MovieService {
           'movieImageUrl': movieImageUrl,
           'addedAt': FieldValue.serverTimestamp(),
         });
-        print("Film listeye eklendi: $movieTitle");
         return true; // Film eklendi
       }
     } catch (e) {
-      print("addToUserList hatası: $e");
       throw Exception("User list güncellenemedi: $e");
     }
   }
@@ -133,7 +122,6 @@ class MovieService {
     try {
       final userId = _currentUserId!;
 
-      print("Kullanıcı listesi getiriliyor, userId: $userId");
 
       final query = await _firestore
           .collection('user_lists')
@@ -141,20 +129,15 @@ class MovieService {
           .orderBy('addedAt', descending: true)
           .get();
 
-      print("Kullanıcı listesinde bulunan film sayısı: ${query.docs.length}");
 
       final userList = query.docs
           .map((doc) => UserList.fromFirestore(doc.data(), doc.id))
           .toList();
 
-      // Debug için
-      for (var item in userList) {
-        print("User List Film: ${item.movieTitle} - ${item.movieImageUrl}");
-      }
+      
 
       return userList;
     } catch (e) {
-      print("getUserList hatası: $e");
       throw Exception("User list alınamadı: $e");
     }
   }
@@ -173,11 +156,9 @@ class MovieService {
           .get();
 
       final isInList = query.docs.isNotEmpty;
-      print("Film $movieId listede mi: $isInList");
 
       return isInList;
     } catch (e) {
-      print("isInUserList hatası: $e");
       return false;
     }
   }
@@ -203,11 +184,9 @@ class MovieService {
       }
 
       await _firestore.collection('user_lists').doc(listId).delete();
-      print("Film listeden kaldırıldı, listId: $listId");
 
       return true;
     } catch (e) {
-      print("removeFromUserList hatası: $e");
       throw Exception("Film listeden kaldırılamadı: $e");
     }
   }
@@ -228,7 +207,6 @@ class MovieService {
           .get();
 
       if (query.docs.isEmpty) {
-        print("Kaldırılacak film bulunamadı: $movieId");
         return false;
       }
 
@@ -237,11 +215,9 @@ class MovieService {
           .collection('user_lists')
           .doc(query.docs.first.id)
           .delete();
-      print("Film movieId ile kaldırıldı: $movieId");
 
       return true;
     } catch (e) {
-      print("removeFromUserListByMovieId hatası: $e");
       throw Exception("Film listeden kaldırılamadı: $e");
     }
   }
