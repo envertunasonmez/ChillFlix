@@ -241,19 +241,19 @@ class _FilmCardState extends State<FilmCard> {
     try {
       final moviesCubit = context.read<MoviesCubit>();
 
-      // Mevcut durumu al
+      // get current status
 
-      // Toggle işlemi yap
+      // do toggle action
       await moviesCubit.toggleUserList(
         widget.movie.id,
         widget.movie.title,
         widget.movie.imageUrl,
       );
 
-      // ProfileView'daki listeyi güncelle (bu önemli!)
+      // Refresh user list
       await moviesCubit.getUserList();
 
-      // Yeni durumu kontrol et
+      // Check new status
       final newStatus = await moviesCubit.isInUserList(widget.movie.id);
 
       if (mounted) {
@@ -262,7 +262,7 @@ class _FilmCardState extends State<FilmCard> {
           _isLoading = false;
         });
 
-        // Doğru mesajı göster
+        // Show feedback message
         final message = newStatus
             ? '${widget.movie.title} listenize eklendi!'
             : '${widget.movie.title} listenizden çıkarıldı!';

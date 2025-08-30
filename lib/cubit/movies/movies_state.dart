@@ -1,4 +1,3 @@
-// movies_state.dart
 part of 'movies_cubit.dart';
 
 class MoviesState extends Equatable {
@@ -56,12 +55,16 @@ class MoviesState extends Equatable {
     return MoviesState(
       mostWantedMovies: mostWantedMovies ?? this.mostWantedMovies,
       mostWantedLoading: mostWantedLoading ?? this.mostWantedLoading,
-      onlyOnChillflixMovies: onlyOnChillflixMovies ?? this.onlyOnChillflixMovies,
-      onlyOnChillflixLoading: onlyOnChillflixLoading ?? this.onlyOnChillflixLoading,
+      onlyOnChillflixMovies:
+          onlyOnChillflixMovies ?? this.onlyOnChillflixMovies,
+      onlyOnChillflixLoading:
+          onlyOnChillflixLoading ?? this.onlyOnChillflixLoading,
       comingSoonMovies: comingSoonMovies ?? this.comingSoonMovies,
       comingSoonLoading: comingSoonLoading ?? this.comingSoonLoading,
-      everyoneWatchTheseMovies: everyoneWatchTheseMovies ?? this.everyoneWatchTheseMovies,
-      everyoneWatchTheseLoading: everyoneWatchTheseLoading ?? this.everyoneWatchTheseLoading,
+      everyoneWatchTheseMovies:
+          everyoneWatchTheseMovies ?? this.everyoneWatchTheseMovies,
+      everyoneWatchTheseLoading:
+          everyoneWatchTheseLoading ?? this.everyoneWatchTheseLoading,
       top10Movies: top10Movies ?? this.top10Movies,
       top10MoviesLoading: top10MoviesLoading ?? this.top10MoviesLoading,
       top10Series: top10Series ?? this.top10Series,

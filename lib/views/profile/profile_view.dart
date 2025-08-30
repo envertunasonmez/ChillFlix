@@ -26,7 +26,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    // Widget ilk yüklendiğinde kullanıcı listesini getir
+    // Load user list on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MoviesCubit>().getUserList();
     });
@@ -40,7 +40,7 @@ class _ProfileViewState extends State<ProfileView> {
         color: ColorConstants.redColor,
         backgroundColor: ColorConstants.blackColor,
         onRefresh: () async {
-          // Pull-to-refresh ile listeyi yenile
+          // Refresh user list
           await context.read<MoviesCubit>().getUserList();
         },
         child: SingleChildScrollView(
@@ -57,9 +57,9 @@ class _ProfileViewState extends State<ProfileView> {
               const SizedBox(height: 16),
               NotificationItem(
                 imagePath: AssetsConstants.banner,
-                title: "Film Başlığı",
-                genre: "Aksiyon, Macera",
-                date: "20 Ağu",
+                title: "Drive To Survive",
+                genre: "Action, Drama",
+                date: "20 Aug",
               ),
               const SizedBox(height: 32),
               const DownloadedRow(),

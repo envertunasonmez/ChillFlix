@@ -76,7 +76,7 @@ class FilmCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Listem butonu
+            // myList button
             if (onListTap != null)
               Positioned(
                 top: 8,
@@ -98,7 +98,7 @@ class FilmCard extends StatelessWidget {
                   ),
                 ),
               ),
-            // Film bilgileri (alt kısım)
+            // film informations
             Positioned(
               bottom: 8,
               left: 8,

@@ -33,7 +33,7 @@ class _DiscoverViewState extends State<DiscoverView> {
   }
 
   void _loadAllCategories(MoviesCubit moviesCubit) {
-    // Tüm kategorileri aynı anda yükle
+    // get all categories
     moviesCubit.getComingSoonMovies();
     moviesCubit.getEveryoneWatchTheseMovies();
     moviesCubit.getTop10Movies();
@@ -49,7 +49,7 @@ class _DiscoverViewState extends State<DiscoverView> {
       ],
       child: Builder(
         builder: (context) {
-          // Sayfa açıldığında tüm kategorileri yükle
+          // Load all categories once the widget is built
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _loadAllCategories(context.read<MoviesCubit>());
           });

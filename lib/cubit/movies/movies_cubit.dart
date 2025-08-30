@@ -71,12 +71,12 @@ class MoviesCubit extends Cubit<MoviesState> {
     }
   }
 
-  /// Film listeye ekle/çıkar ve sonucu döndür
+  /// Add or remove a movie from the user's list
   Future<bool> toggleUserList(String movieId, String movieTitle, String movieImageUrl) async {
     try {
       final result = await _movieService.addToUserList(movieId, movieTitle, movieImageUrl);
       
-      // User list'i otomatik güncelle
+      // Refresh the user list after toggling
       await getUserList();
       
       return result;

@@ -1,7 +1,6 @@
 import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
-// Tek bir IconButton widget'ı
 class AppBarIconButton extends StatelessWidget {
   final IconData icon;
   final double size;

@@ -10,10 +10,10 @@ class MovieService {
   // Current user getter
   String? get _currentUserId => _auth.currentUser?.uid;
 
-  // Auth durumu kontrolü
+  // Authenticated check
   bool get isUserLoggedIn => _auth.currentUser != null;
 
-  /// Belirli kategoriye göre filmleri getir
+  /// Fetch movies by category
   Future<List<Movie>> getMoviesByCategory(String category) async {
     try {
       final query = await _firestore
@@ -76,7 +76,7 @@ class MovieService {
     }
   }
 
-  /// Kullanıcının listesine film ekle/çıkar (Toggle)
+  /// Add or remove a movie from the user's list
   Future<bool> addToUserList(
       String movieId, String movieTitle, String movieImageUrl) async {
     if (!isUserLoggedIn) {
@@ -87,18 +87,18 @@ class MovieService {
       final userId = _currentUserId!;
       final userListRef = _firestore.collection('user_lists');
 
-      // Aynı film zaten var mı kontrol et
+      // Check if the movie is already in the user's list
       final existingQuery = await userListRef
           .where('userId', isEqualTo: userId)
           .where('movieId', isEqualTo: movieId)
           .get();
 
       if (existingQuery.docs.isNotEmpty) {
-        // Film zaten listede varsa kaldır
+        // Film already in list, remove it
         await userListRef.doc(existingQuery.docs.first.id).delete();
-        return false; // Film çıkarıldı
+        return false; // Film removed
       } else {
-        // Film listede yoksa ekle
+        // Film not in list, add it
         await userListRef.add({
           'userId': userId,
           'movieId': movieId,
@@ -106,14 +106,14 @@ class MovieService {
           'movieImageUrl': movieImageUrl,
           'addedAt': FieldValue.serverTimestamp(),
         });
-        return true; // Film eklendi
+        return true; // Film added
       }
     } catch (e) {
       throw Exception("User list güncellenemedi: $e");
     }
   }
 
-  /// Kullanıcının listesini getir
+  /// Get the user's movie list
   Future<List<UserList>> getUserList() async {
     if (!isUserLoggedIn) {
       throw Exception("Kullanıcı giriş yapmamış");
@@ -142,7 +142,7 @@ class MovieService {
     }
   }
 
-  /// Film kullanıcının listesinde mi kontrol et
+  /// Check if a movie is in the user's list
   Future<bool> isInUserList(String movieId) async {
     if (!isUserLoggedIn) return false;
 
@@ -163,21 +163,21 @@ class MovieService {
     }
   }
 
-  /// Kullanıcının listesinden film kaldır (ID ile)
+  /// Remove a movie from the user's list by list ID
   Future<bool> removeFromUserList(String listId) async {
     if (!isUserLoggedIn) {
       throw Exception("Kullanıcı giriş yapmamış");
     }
 
     try {
-      // Önce dokümanı kontrol et
+      // Verify the list item exists and belongs to the current user
       final doc = await _firestore.collection('user_lists').doc(listId).get();
 
       if (!doc.exists) {
         throw Exception("Liste öğesi bulunamadı");
       }
 
-      // Güvenlik: Sadece kendi listesinden silebilir
+      // Check ownership
       final data = doc.data()!;
       if (data['userId'] != _currentUserId) {
         throw Exception("Bu liste öğesini silme yetkiniz yok");
@@ -191,7 +191,7 @@ class MovieService {
     }
   }
 
-  /// Kullanıcının listesinden film kaldır (Movie ID ile)
+  /// Remove a movie from the user's list by movie ID
   Future<bool> removeFromUserListByMovieId(String movieId) async {
     if (!isUserLoggedIn) {
       throw Exception("Kullanıcı giriş yapmamış");
@@ -210,7 +210,7 @@ class MovieService {
         return false;
       }
 
-      // İlk bulunan dokümanı sil
+      // Delete the document
       await _firestore
           .collection('user_lists')
           .doc(query.docs.first.id)
@@ -222,10 +222,10 @@ class MovieService {
     }
   }
 
-  /// Auth durumu dinleyici
+  /// Authentication state changes stream
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  /// Kullanıcı bilgileri
+  /// Current user info
   User? get currentUser => _auth.currentUser;
   String? get currentUserEmail => _auth.currentUser?.email;
   String? get currentUserDisplayName => _auth.currentUser?.displayName;

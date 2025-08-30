@@ -147,7 +147,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                 userListItem: userListItem,
                 cleanUrl: cleanUrl,
                 onRemove: () async {
-                  // Loading state göster
+                  // Loading state message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${userListItem.movieTitle} kaldırılıyor...'),
@@ -156,10 +156,10 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                   );
                   
-                  // Film kaldır
+                  // remove film from user list
                   await context.read<MoviesCubit>().removeFromUserList(userListItem.id);
                   
-                  // Success mesajı
+                  // Success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${userListItem.movieTitle} listeden kaldırıldı'),
@@ -207,7 +207,7 @@ class _MovieListItem extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Film resmi
+            // Film image
             Positioned(
               top: 0,
               left: 0,
@@ -254,7 +254,7 @@ class _MovieListItem extends StatelessWidget {
               ),
             ),
             
-            // Remove butonu
+            // Remove button
             Positioned(
               top: 150,
               left: 0,

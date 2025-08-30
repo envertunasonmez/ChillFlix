@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class CategoryButtons extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final IconData? icon; // İkon opsiyonel
+  final IconData? icon; 
   final double fontSize;
 
   const CategoryButtons({
