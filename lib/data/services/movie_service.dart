@@ -4,8 +4,12 @@ import '../models/user_list_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MovieService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
+
+  MovieService({FirebaseFirestore? firestore, FirebaseAuth? auth})
+      : _firestore = firestore ?? FirebaseFirestore.instance,
+        _auth = auth ?? FirebaseAuth.instance;
 
   // Current user getter
   String? get _currentUserId => _auth.currentUser?.uid;
@@ -36,13 +40,10 @@ class MovieService {
           .where('category', isEqualTo: 'top_movie')
           .get();
 
-      if (query.docs.isEmpty) {}
-
       List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
 
-      // Client-side sorting
       movies.sort((a, b) => b.rating.compareTo(a.rating));
 
       return movies.take(10).toList();
@@ -81,18 +82,15 @@ class MovieService {
       final userId = _currentUserId!;
       final userListRef = _firestore.collection('user_lists');
 
-      // Check if the movie is already in the user's list
       final existingQuery = await userListRef
           .where('userId', isEqualTo: userId)
           .where('movieId', isEqualTo: movieId)
           .get();
 
       if (existingQuery.docs.isNotEmpty) {
-        // Film already in list, remove it
         await userListRef.doc(existingQuery.docs.first.id).delete();
-        return false; // Film removed
+        return false;
       } else {
-        // Film not in list, add it
         await userListRef.add({
           'userId': userId,
           'movieId': movieId,
@@ -100,7 +98,7 @@ class MovieService {
           'movieImageUrl': movieImageUrl,
           'addedAt': FieldValue.serverTimestamp(),
         });
-        return true; // Film added
+        return true;
       }
     } catch (e) {
       throw Exception("User list could not be updated: $e");
@@ -145,9 +143,7 @@ class MovieService {
           .where('movieId', isEqualTo: movieId)
           .get();
 
-      final isInList = query.docs.isNotEmpty;
-
-      return isInList;
+      return query.docs.isNotEmpty;
     } catch (e) {
       return false;
     }
@@ -160,21 +156,18 @@ class MovieService {
     }
 
     try {
-      // Verify the list item exists and belongs to the current user
       final doc = await _firestore.collection('user_lists').doc(listId).get();
 
       if (!doc.exists) {
         throw Exception("List item not found");
       }
 
-      // Check ownership
       final data = doc.data()!;
       if (data['userId'] != _currentUserId) {
         throw Exception("You do not have permission to delete this list item.");
       }
 
       await _firestore.collection('user_lists').doc(listId).delete();
-
       return true;
     } catch (e) {
       throw Exception("Film couldn't remove from list: $e");
@@ -200,7 +193,6 @@ class MovieService {
         return false;
       }
 
-      // Delete the document
       await _firestore
           .collection('user_lists')
           .doc(query.docs.first.id)
