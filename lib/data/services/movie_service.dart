@@ -25,44 +25,38 @@ class MovieService {
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
-      throw Exception("Kategoriye göre film alınamadı: $e");
+      throw Exception("Movies by category could not be retrieved: $e");
     }
   }
 
   Future<List<Movie>> getTop10Movies() async {
     try {
-
       final query = await _firestore
           .collection('movies')
           .where('category', isEqualTo: 'top_movie')
           .get();
 
-
-      if (query.docs.isEmpty) {
-      }
+      if (query.docs.isEmpty) {}
 
       List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
           .toList();
-
 
       // Client-side sorting
       movies.sort((a, b) => b.rating.compareTo(a.rating));
 
       return movies.take(10).toList();
     } catch (e) {
-      throw Exception("Top10 Movies alınamadı: $e");
+      throw Exception("Top10 Movies could not be retrieved: $e");
     }
   }
 
   Future<List<Movie>> getTop10Series() async {
     try {
-
       final query = await _firestore
           .collection('movies')
           .where('category', isEqualTo: 'top_series')
           .get();
-
 
       List<Movie> movies = query.docs
           .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
@@ -72,7 +66,7 @@ class MovieService {
 
       return movies.take(10).toList();
     } catch (e) {
-      throw Exception("Top10 Series alınamadı: $e");
+      throw Exception("Top10 Series could not be obtained: $e");
     }
   }
 
@@ -80,7 +74,7 @@ class MovieService {
   Future<bool> addToUserList(
       String movieId, String movieTitle, String movieImageUrl) async {
     if (!isUserLoggedIn) {
-      throw Exception("Kullanıcı giriş yapmamış");
+      throw Exception("User not logged in");
     }
 
     try {
@@ -109,19 +103,18 @@ class MovieService {
         return true; // Film added
       }
     } catch (e) {
-      throw Exception("User list güncellenemedi: $e");
+      throw Exception("User list could not be updated: $e");
     }
   }
 
   /// Get the user's movie list
   Future<List<UserList>> getUserList() async {
     if (!isUserLoggedIn) {
-      throw Exception("Kullanıcı giriş yapmamış");
+      throw Exception("User not logged in");
     }
 
     try {
       final userId = _currentUserId!;
-
 
       final query = await _firestore
           .collection('user_lists')
@@ -129,16 +122,13 @@ class MovieService {
           .orderBy('addedAt', descending: true)
           .get();
 
-
       final userList = query.docs
           .map((doc) => UserList.fromFirestore(doc.data(), doc.id))
           .toList();
 
-      
-
       return userList;
     } catch (e) {
-      throw Exception("User list alınamadı: $e");
+      throw Exception("User list could not be retrieved: $e");
     }
   }
 
@@ -166,7 +156,7 @@ class MovieService {
   /// Remove a movie from the user's list by list ID
   Future<bool> removeFromUserList(String listId) async {
     if (!isUserLoggedIn) {
-      throw Exception("Kullanıcı giriş yapmamış");
+      throw Exception("User not logged in");
     }
 
     try {
@@ -174,27 +164,27 @@ class MovieService {
       final doc = await _firestore.collection('user_lists').doc(listId).get();
 
       if (!doc.exists) {
-        throw Exception("Liste öğesi bulunamadı");
+        throw Exception("List item not found");
       }
 
       // Check ownership
       final data = doc.data()!;
       if (data['userId'] != _currentUserId) {
-        throw Exception("Bu liste öğesini silme yetkiniz yok");
+        throw Exception("You do not have permission to delete this list item.");
       }
 
       await _firestore.collection('user_lists').doc(listId).delete();
 
       return true;
     } catch (e) {
-      throw Exception("Film listeden kaldırılamadı: $e");
+      throw Exception("Film couldn't remove from list: $e");
     }
   }
 
   /// Remove a movie from the user's list by movie ID
   Future<bool> removeFromUserListByMovieId(String movieId) async {
     if (!isUserLoggedIn) {
-      throw Exception("Kullanıcı giriş yapmamış");
+      throw Exception("User not log in");
     }
 
     try {
@@ -218,7 +208,7 @@ class MovieService {
 
       return true;
     } catch (e) {
-      throw Exception("Film listeden kaldırılamadı: $e");
+      throw Exception("Film couldn't remove: $e");
     }
   }
 
