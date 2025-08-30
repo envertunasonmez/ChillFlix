@@ -1,7 +1,7 @@
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
 import 'package:chillflix_app/cubit/locale/locale_cubit.dart';
+import 'package:chillflix_app/cubit/movies/movies_cubit.dart';
 import 'package:flutter/material.dart';
-
 import 'package:chillflix_app/generated/l10n.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
@@ -15,44 +15,67 @@ import 'package:chillflix_app/views/profile/widgets/notification_row.dart';
 import 'package:chillflix_app/views/profile/widgets/profile_header.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  void initState() {
+    super.initState();
+    // Widget ilk yüklendiğinde kullanıcı listesini getir
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MoviesCubit>().getUserList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.blackColor,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _CustomAppBar(),
-            const SizedBox(height: 24),
-            const Center(child: ProfileHeader()),
-            const SizedBox(height: 24),
-            const NotificationRow(),
-            const SizedBox(height: 16),
-            NotificationItem(
-              imagePath: AssetsConstants.banner,
-              title: "Film Başlığı",
-              genre: "Aksiyon, Macera",
-              date: "20 Ağu",
-            ),
-            const SizedBox(height: 32),
-            const DownloadedRow(),
-            const SizedBox(height: 32),
-            Text(
-              S.of(context).likedSeriesAndFilms,
-              style: AppTextStyles.bodyStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: ColorConstants.whiteColor,
+      body: RefreshIndicator(
+        color: ColorConstants.redColor,
+        backgroundColor: ColorConstants.blackColor,
+        onRefresh: () async {
+          // Pull-to-refresh ile listeyi yenile
+          await context.read<MoviesCubit>().getUserList();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _CustomAppBar(),
+              const SizedBox(height: 24),
+              const Center(child: ProfileHeader()),
+              const SizedBox(height: 24),
+              const NotificationRow(),
+              const SizedBox(height: 16),
+              NotificationItem(
+                imagePath: AssetsConstants.banner,
+                title: "Film Başlığı",
+                genre: "Aksiyon, Macera",
+                date: "20 Ağu",
               ),
-            ),
-            const SizedBox(height: 16),
-            const LikedMoviesList(),
-          ],
+              const SizedBox(height: 32),
+              const DownloadedRow(),
+              const SizedBox(height: 32),
+              Text(
+                S.of(context).likedSeriesAndFilms,
+                style: AppTextStyles.bodyStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: ColorConstants.whiteColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const LikedMoviesList(),
+            ],
+          ),
         ),
       ),
     );
@@ -134,14 +157,13 @@ class _ProfileBottomSheet extends StatelessWidget {
             title: S.of(context).changeLanguage,
             onTap: () => _showLanguageSelector(context),
           ),
-         _BottomSheetTile(
-  icon: Icons.logout,
-  title: S.of(context).logOut,
-  onTap: () {
-    context.read<AuthCubit>().signOut(context);
-  },
-),
-
+          _BottomSheetTile(
+            icon: Icons.logout,
+            title: S.of(context).logOut,
+            onTap: () {
+              context.read<AuthCubit>().signOut(context);
+            },
+          ),
         ],
       ),
     );
@@ -152,14 +174,14 @@ class _ProfileBottomSheet extends StatelessWidget {
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: Colors.black, // dialog arka planı siyah
+          backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16), // köşeler dialog ile aynı
+            borderRadius: BorderRadius.circular(16),
           ),
-          titlePadding: EdgeInsets.zero, // title padding sıfır
+          titlePadding: EdgeInsets.zero,
           title: Container(
             decoration: BoxDecoration(
-              color: ColorConstants.redColor, // üst bar kırmızı
+              color: ColorConstants.redColor,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),

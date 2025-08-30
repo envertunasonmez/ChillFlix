@@ -10,7 +10,7 @@ import 'package:chillflix_app/product/models/movie_model.dart';
 class FilmCardSection extends StatelessWidget {
   final Map<String, String> category;
   final bool isComingSoon;
-  final int categoryIndex; // Hangi kategori olduğunu belirtmek için
+  final int categoryIndex;
 
   const FilmCardSection({
     super.key,
@@ -18,49 +18,6 @@ class FilmCardSection extends StatelessWidget {
     this.isComingSoon = true,
     required this.categoryIndex,
   });
-
-  Widget _buildMovieImage(Movie movie) {
-    // URL'deki tırnak işaretlerini temizle
-    String cleanUrl = movie.imageUrl.replaceAll('"', '').trim();
-
-    if (cleanUrl.isEmpty || !Uri.tryParse(cleanUrl)!.hasScheme == true) {
-      return Image.asset(
-        AssetsConstants.banner,
-        height: 200,
-        width: double.infinity,
-        fit: BoxFit.cover,
-      );
-    }
-
-    return Image.network(
-      cleanUrl,
-      height: 200,
-      width: double.infinity,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        print("Image loading error for URL: $cleanUrl - Error: $error");
-        return Image.asset(
-          AssetsConstants.banner,
-          height: 200,
-          width: double.infinity,
-          fit: BoxFit.cover,
-        );
-      },
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          height: 200,
-          width: double.infinity,
-          color: Colors.grey[800],
-          child: const Center(
-            child: CircularProgressIndicator(
-              color: ColorConstants.whiteColor,
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,41 +39,37 @@ class FilmCardSection extends StatelessWidget {
           ),
           BlocBuilder<MoviesCubit, MoviesState>(
             builder: (context, state) {
-              // Kategori bazında loading kontrolü
               bool isLoading = false;
               List<Movie> movies = [];
               String? error = state.errorMessage;
 
               switch (categoryIndex) {
-                case 0: // Çok Yakında
+                case 0:
                   isLoading = state.comingSoonLoading;
                   movies = state.comingSoonMovies;
                   break;
-                case 1: // Herkes Bunları İzliyor
+                case 1:
                   isLoading = state.everyoneWatchTheseLoading;
                   movies = state.everyoneWatchTheseMovies;
                   break;
-                case 2: // Top 10 Filmler
+                case 2:
                   isLoading = state.top10MoviesLoading;
                   movies = state.top10Movies;
                   break;
-                case 3: // Top 10 Diziler
+                case 3:
                   isLoading = state.top10SeriesLoading;
                   movies = state.top10Series;
                   break;
               }
 
-              // Loading durumu
               if (isLoading) {
                 return _buildLoadingWidget();
               }
 
-              // Error durumu
               if (error != null) {
                 return _buildErrorWidget(error);
               }
 
-              // Empty durumu
               if (movies.isEmpty) {
                 return _buildEmptyWidget();
               }
@@ -197,7 +150,7 @@ class FilmCardSection extends StatelessWidget {
   }
 }
 
-class FilmCard extends StatelessWidget {
+class FilmCard extends StatefulWidget {
   final Movie movie;
   final bool isComingSoon;
 
@@ -207,11 +160,42 @@ class FilmCard extends StatelessWidget {
     this.isComingSoon = true,
   });
 
+  @override
+  State<FilmCard> createState() => _FilmCardState();
+}
+
+class _FilmCardState extends State<FilmCard> {
+  bool? _isInUserList;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfInUserList();
+  }
+
+  Future<void> _checkIfInUserList() async {
+    try {
+      final isInList =
+          await context.read<MoviesCubit>().isInUserList(widget.movie.id);
+      if (mounted) {
+        setState(() {
+          _isInUserList = isInList;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isInUserList = false;
+        });
+      }
+    }
+  }
+
   Widget _buildMovieImage(Movie movie) {
-    // URL'deki tırnak işaretlerini temizle
     String cleanUrl = movie.imageUrl.replaceAll('"', '').trim();
 
-    if (cleanUrl.isEmpty || !Uri.tryParse(cleanUrl)!.hasScheme == true) {
+    if (cleanUrl.isEmpty || Uri.tryParse(cleanUrl)?.hasScheme != true) {
       return Image.asset(
         AssetsConstants.banner,
         height: 200,
@@ -226,7 +210,6 @@ class FilmCard extends StatelessWidget {
       width: double.infinity,
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
-        print("Image loading error for URL: $cleanUrl - Error: $error");
         return Image.asset(
           AssetsConstants.banner,
           height: 200,
@@ -250,6 +233,66 @@ class FilmCard extends StatelessWidget {
     );
   }
 
+  Future<void> _handleMyListToggle() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final moviesCubit = context.read<MoviesCubit>();
+
+      // Mevcut durumu al
+      final currentStatus = _isInUserList ?? false;
+      print("🎬 Mevcut durum: $currentStatus, Film: ${widget.movie.title}");
+
+      // Toggle işlemi yap
+      await moviesCubit.toggleUserList(
+        widget.movie.id,
+        widget.movie.title,
+        widget.movie.imageUrl,
+      );
+
+      // ProfileView'daki listeyi güncelle (bu önemli!)
+      await moviesCubit.getUserList();
+
+      // Yeni durumu kontrol et
+      final newStatus = await moviesCubit.isInUserList(widget.movie.id);
+      print("🎬 Yeni durum: $newStatus");
+
+      if (mounted) {
+        setState(() {
+          _isInUserList = newStatus;
+          _isLoading = false;
+        });
+
+        // Doğru mesajı göster
+        final message = newStatus
+            ? '${widget.movie.title} listenize eklendi!'
+            : '${widget.movie.title} listenizden çıkarıldı!';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: ColorConstants.redColor,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      print("❌ Toggle hatası: $e");
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Hata oluştu: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -270,7 +313,7 @@ class FilmCard extends StatelessWidget {
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
-            child: _buildMovieImage(movie),
+            child: _buildMovieImage(widget.movie),
           ),
           Padding(
             padding: const EdgeInsets.all(12),
@@ -278,7 +321,7 @@ class FilmCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  movie.title,
+                  widget.movie.title,
                   style: AppTextStyles.bodyStyle(
                     fontSize: 18,
                     color: ColorConstants.whiteColor,
@@ -289,7 +332,7 @@ class FilmCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  movie.description,
+                  widget.movie.description,
                   style: AppTextStyles.bodyStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -298,7 +341,7 @@ class FilmCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 12),
-                isComingSoon
+                widget.isComingSoon
                     ? _buildReminderButton(context)
                     : _buildPlayAndListButton(context),
               ],
@@ -314,7 +357,12 @@ class FilmCard extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () {
-          // TODO: Hatırlatma işlevi ekle
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${widget.movie.title} için hatırlatma eklendi!'),
+              backgroundColor: ColorConstants.redColor,
+            ),
+          );
         },
         icon: const Icon(
           Icons.notifications_none,
@@ -344,7 +392,12 @@ class FilmCard extends StatelessWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () {
-              // TODO: Oynatma işlevi ekle
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${widget.movie.title} oynatılıyor...'),
+                  backgroundColor: ColorConstants.redColor,
+                ),
+              );
             },
             icon: const Icon(
               Icons.play_arrow,
@@ -368,42 +421,37 @@ class FilmCard extends StatelessWidget {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: BlocBuilder<MoviesCubit, MoviesState>(
-            builder: (context, state) {
-              return FutureBuilder<bool>(
-                future: context.read<MoviesCubit>().isInUserList(movie.id),
-                builder: (context, snapshot) {
-                  final isInList = snapshot.data ?? false;
-                  return ElevatedButton.icon(
-                    onPressed: () {
-                      context.read<MoviesCubit>().toggleUserList(
-                            movie.id,
-                            movie.title,
-                            movie.imageUrl,
-                          );
-                    },
-                    icon: Icon(
-                      isInList ? Icons.check : Icons.add,
+          child: ElevatedButton.icon(
+            onPressed: _isLoading ? null : _handleMyListToggle,
+            icon: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
                       color: ColorConstants.whiteColor,
-                      size: 28,
+                      strokeWidth: 2,
                     ),
-                    label: Text(
-                      S.of(context).myList,
-                      style: AppTextStyles.buttonStyle(
-                        color: ColorConstants.whiteColor,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstants.greyColor,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+                  )
+                : Icon(
+                    _isInUserList == true ? Icons.check : Icons.add,
+                    color: ColorConstants.whiteColor,
+                    size: 28,
+                  ),
+            label: Text(
+              S.of(context).myList,
+              style: AppTextStyles.buttonStyle(
+                color: ColorConstants.whiteColor,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isInUserList == true
+                  ? ColorConstants.redColor
+                  : ColorConstants.greyColor,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
           ),
         ),
       ],
