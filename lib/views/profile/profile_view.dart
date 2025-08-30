@@ -174,7 +174,7 @@ class _ProfileBottomSheet extends StatelessWidget {
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: ColorConstants.blackColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

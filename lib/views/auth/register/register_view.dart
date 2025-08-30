@@ -1,3 +1,5 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
@@ -17,7 +19,7 @@ class RegisterView extends StatelessWidget {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            backgroundColor: Colors.red,
+            backgroundColor: ColorConstants.redColor,
             content: Text(state.errorMessage!),
           ),
         );
@@ -30,10 +32,9 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.black,
+      backgroundColor: ColorConstants.blackColor,
       body: SafeArea(
         child: BlocListener<AuthCubit, AuthState>(
           listener: _onListen,
@@ -45,16 +46,18 @@ class RegisterView extends StatelessWidget {
                 children: [
                   Text(
                     'ChillFlix',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                        color: Colors.red, fontWeight: FontWeight.bold),
+                    style: AppTextStyles.headLineStyle(
+                        color: ColorConstants.redColor,
+                        fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 24),
                   const RegisterForm(),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () => _goToLogin(context),
-                    child: const Text('Zaten hesabın var mı? Giriş yap',
-                        style: TextStyle(color: Colors.white70)),
+                    child: Text('Zaten hesabın var mı? Giriş yap',
+                        style: AppTextStyles.bodyStyle(
+                            color: ColorConstants.whiteColor.withOpacity(0.7))),
                   ),
                 ],
               ),

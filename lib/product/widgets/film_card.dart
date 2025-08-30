@@ -1,3 +1,5 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/models/movie_model.dart';
 
@@ -50,10 +52,10 @@ class FilmCard extends StatelessWidget {
                   return Container(
                     width: width,
                     height: height,
-                    color: Colors.grey[800],
-                    child: const Icon(
+                    color: ColorConstants.greyColor,
+                    child: Icon(
                       Icons.movie,
-                      color: Colors.white,
+                      color: ColorConstants.whiteColor,
                       size: 40,
                     ),
                   );
@@ -92,7 +94,7 @@ class FilmCard extends StatelessWidget {
                     ),
                     child: Icon(
                       isInList ? Icons.remove : Icons.add,
-                      color: Colors.white,
+                      color: ColorConstants.whiteColor,
                       size: 16,
                     ),
                   ),
@@ -108,8 +110,8 @@ class FilmCard extends StatelessWidget {
                 children: [
                   Text(
                     movie.title,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: AppTextStyles.bodyStyle(
+                      color: ColorConstants.whiteColor,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),

@@ -281,7 +281,7 @@ class _FilmCardState extends State<FilmCard> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Hata oluştu: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: ColorConstants.redColor,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -331,7 +331,7 @@ class _FilmCardState extends State<FilmCard> {
                   widget.movie.description,
                   style: AppTextStyles.bodyStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: ColorConstants.greyColor,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

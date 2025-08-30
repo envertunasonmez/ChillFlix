@@ -1,3 +1,5 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
@@ -17,20 +19,20 @@ class PasswordField extends StatelessWidget {
           initialValue: state.password,
           onChanged: context.read<AuthCubit>().updatePassword,
           obscureText: state.isPasswordObscured,
-          style: const TextStyle(color: Colors.white),
+          style:  AppTextStyles.buttonStyle(color: ColorConstants.whiteColor),
           decoration: InputDecoration(
             labelText: 'Şifre',
-            labelStyle: const TextStyle(color: Colors.white70),
-            enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white24)),
-            focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red)),
+            labelStyle:  TextStyle(color: ColorConstants.whiteColor),
+            enabledBorder:  OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.whiteColor)),
+            focusedBorder:  OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.redColor)),
             suffixIcon: IconButton(
               icon: Icon(
                 state.isPasswordObscured
                     ? Icons.visibility
                     : Icons.visibility_off,
-                color: Colors.white70,
+                color: ColorConstants.whiteColor,
               ),
               onPressed: context.read<AuthCubit>().togglePasswordObscure,
             ),

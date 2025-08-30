@@ -229,7 +229,7 @@ class _MovieHorizontalList extends StatelessWidget {
           return SizedBox(
             height: size.height * heightFactor,
             child: const Center(
-                child: CircularProgressIndicator(color: Colors.white)),
+                child: CircularProgressIndicator(color: ColorConstants.whiteColor)),
           );
         }
 
@@ -238,7 +238,7 @@ class _MovieHorizontalList extends StatelessWidget {
             height: size.height * heightFactor,
             child: const Center(
                 child: Text('Film bulunamadı',
-                    style: TextStyle(color: Colors.white))),
+                    style: TextStyle(color: ColorConstants.whiteColor))),
           );
         }
 

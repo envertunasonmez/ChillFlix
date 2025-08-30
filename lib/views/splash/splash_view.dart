@@ -1,4 +1,5 @@
 import 'package:chillflix_app/product/constants/assets_constants.dart';
+import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/splash/splash_cubit.dart';
@@ -23,7 +24,7 @@ class SplashView extends StatelessWidget {
           }
         },
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: ColorConstants.blackColor,
           body: Center(
             child: Image.asset(
               AssetsConstants.logo,

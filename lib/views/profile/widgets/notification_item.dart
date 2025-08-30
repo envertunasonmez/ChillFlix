@@ -52,13 +52,13 @@ class NotificationItem extends StatelessWidget {
                   style: AppTextStyles.bodyStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      color: Colors.grey)),
+                      color: ColorConstants.greyColor)),
               const SizedBox(height: 4),
               Text(date,
                   style: AppTextStyles.bodyStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
-                      color: Colors.grey)),
+                      color: ColorConstants.greyColor)),
             ],
           ),
         ),

@@ -1,4 +1,3 @@
-import 'package:chillflix_app/generated/l10n.dart';
 import 'package:chillflix_app/product/models/user_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +36,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   Text(
                     'Filmleriniz yükleniyor...',
                     style: AppTextStyles.bodyStyle(
-                      color: Colors.grey,
+                      color: ColorConstants.greyColor,
                       fontSize: 14,
                     ),
                   ),
@@ -59,14 +58,14 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   children: [
                     Icon(
                       Icons.error_outline,
-                      color: Colors.red,
+                      color: ColorConstants.redColor,
                       size: 32,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Bir hata oluştu',
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.red,
+                        color: ColorConstants.redColor,
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
@@ -104,14 +103,14 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   children: [
                     Icon(
                       Icons.movie_outlined,
-                      color: Colors.grey,
+                      color: ColorConstants.greyColor,
                       size: 32,
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'Henüz film eklemedin',
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.grey,
+                        color: ColorConstants.greyColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -120,7 +119,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     Text(
                       'Beğendiğin filmleri listene ekle',
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.grey[600],
+                        color: ColorConstants.greyColor,
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
@@ -199,7 +198,7 @@ class _MovieListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: ColorConstants.blackColor.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -235,7 +234,7 @@ class _MovieListItem extends StatelessWidget {
                           return Container(
                             width: 120,
                             height: 150,
-                            color: Colors.grey[800],
+                            color: ColorConstants.greyColor,
                             child: const Center(
                               child: CircularProgressIndicator(
                                 color: ColorConstants.whiteColor,
