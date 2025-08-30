@@ -4,7 +4,7 @@ import 'package:chillflix_app/data/models/user_list_model.dart';
 
 void main() {
   group("UserList Model Tests", () {
-    test("fromFirestore ve toFirestore başarılı senaryo", () {
+    test("fromFirestore and toFirestore successful scenario", () {
       final timestamp = Timestamp.fromDate(DateTime(2025, 8, 30));
       final data = {
         "userId": "user_1",
@@ -23,34 +23,32 @@ void main() {
       expect(userList.movieImageUrl, "https://example.com/interstellar.jpg");
       expect(userList.addedAt, timestamp.toDate());
 
-      // 🔹 toFirestore doğru çalışıyor mu?
+      // 🔹 Check if toFirestore works correctly
       final map = userList.toFirestore();
       expect(map["userId"], "user_1");
       expect(map["movieId"], "movie_1");
       expect(map["addedAt"], timestamp);
     });
 
-    test(
-        "fromFirestore eksik veri ile çağrıldığında default değerler kullanılır",
-        () {
-      // 🔹 addedAt eksik olursa hata verir, bunu try-catch ile test ediyoruz
+    test("fromFirestore uses default values or throws if data is missing", () {
+      // 🔹 If addedAt is missing, it should throw an error
       final data = {
         "userId": "user_2",
         "movieId": "movie_2",
         "movieTitle": "Incomplete Movie",
         "movieImageUrl": "https://example.com/img.jpg",
-        // "addedAt" eksik
+        // "addedAt" is missing
       };
 
       try {
         UserList.fromFirestore(data, "list_2");
-        fail("Eksik addedAt ile hata alınmalıydı");
+        fail("Should throw an error when addedAt is missing");
       } catch (e) {
-        expect(e, isA<TypeError>()); // Timestamp eksik olduğu için TypeError
+        expect(e, isA<TypeError>()); // TypeError because Timestamp is missing
       }
     });
 
-    test("props ile Equatable çalışıyor", () {
+    test("Equatable props works correctly", () {
       final now = DateTime.now();
       final userList1 = UserList(
         id: "1",
@@ -70,7 +68,7 @@ void main() {
         addedAt: now,
       );
 
-      expect(userList1, userList2); // Equatable sayesinde eşit olmalı
+      expect(userList1, userList2); // Should be equal thanks to Equatable
     });
   });
 }

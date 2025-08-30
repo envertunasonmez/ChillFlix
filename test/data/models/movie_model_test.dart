@@ -3,8 +3,8 @@ import 'package:chillflix_app/data/models/movie_model.dart';
 
 void main() {
   group("Movie Model Tests", () {
-    test("fromFirestore ve toFirestore başarılı senaryo", () {
-      // 🔹 Firestore’dan gelen veri simülasyonu
+    test("fromFirestore and toFirestore successful scenario", () {
+      // 🔹 Simulate data coming from Firestore
       final data = {
         "title": "Interstellar",
         "description": "Space adventure",
@@ -26,14 +26,14 @@ void main() {
       expect(movie.year, 2014);
       expect(movie.duration, 169);
 
-      // 🔹 toFirestore doğru çalışıyor mu?
+      // 🔹 Check if toFirestore works correctly
       final map = movie.toFirestore();
       expect(map["title"], "Interstellar");
       expect(map["rating"], 9.0);
     });
 
-    test("fromFirestore eksik veri ile çağrıldığında default değerler kullanılır", () {
-      // 🔹 Sadece title gönderiliyor, diğerleri eksik
+    test("fromFirestore uses default values if data is incomplete", () {
+      // 🔹 Only title is provided, others are missing
       final data = {
         "title": "Incomplete Movie",
       };
@@ -50,11 +50,11 @@ void main() {
       expect(movie.duration, 0); // default
     });
 
-    test("props ile Equatable çalışıyor", () {
+    test("Equatable props works correctly", () {
       final movie1 = Movie(id: "1", title: "A", description: "", imageUrl: "", category: "");
       final movie2 = Movie(id: "1", title: "A", description: "", imageUrl: "", category: "");
 
-      expect(movie1, movie2); // Equatable sayesinde eşit olmalı
+      expect(movie1, movie2); // Should be equal thanks to Equatable
     });
   });
 }

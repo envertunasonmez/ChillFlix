@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chillflix_app/data/models/movie_model.dart';
 import 'package:chillflix_app/data/services/movie_service.dart';
 
-// 🔹 Mock sınıflar
+// 🔹 Mock classes
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
 class MockCollectionReference extends Mock
@@ -47,14 +47,16 @@ void main() {
     mockDoc = MockQueryDocumentSnapshot();
     mockDocRef = MockDocumentReference();
 
+    // 🔹 Default behavior: user is logged in
     when(() => mockAuth.currentUser).thenReturn(mockUser);
     when(() => mockUser.uid).thenReturn("testUserId");
 
+    // 🔹 Initialize MovieService with mocked Firestore and Auth
     movieService = MovieService(firestore: mockFirestore, auth: mockAuth);
   });
 
   group("MovieService Tests", () {
-    test("getMoviesByCategory başarılı senaryo", () async {
+    test("getMoviesByCategory returns list of movies successfully", () async {
       when(() => mockFirestore.collection("movies")).thenReturn(mockCollection);
       when(() => mockCollection.where("category", isEqualTo: "sci-fi"))
           .thenReturn(mockQuery);
@@ -78,7 +80,7 @@ void main() {
       expect(result.first.title, "Interstellar");
     });
 
-    test("addToUserList başarılı (film ekleme)", () async {
+    test("addToUserList successfully adds a movie to user's list", () async {
       final userLists = MockCollectionReference();
       final queryMock = MockQuery();
       final snapshotMock = MockQuerySnapshot();
@@ -91,7 +93,6 @@ void main() {
       when(() => queryMock.get()).thenAnswer((_) async => snapshotMock);
       when(() => snapshotMock.docs).thenReturn([]);
 
-      // 🔹 Burada null yerine DocumentReference döndür
       when(() => userLists.add(any())).thenAnswer((_) async => mockDocRef);
 
       final result =
@@ -99,7 +100,7 @@ void main() {
       expect(result, true);
     });
 
-    test("addToUserList başarısız (kullanıcı yok)", () async {
+    test("addToUserList throws error when user is not logged in", () async {
       when(() => mockAuth.currentUser).thenReturn(null);
 
       final service = MovieService(firestore: mockFirestore, auth: mockAuth);
@@ -108,7 +109,8 @@ void main() {
           throwsA(isA<Exception>()));
     });
 
-    test("isInUserList başarılı ve false senaryoları", () async {
+    test("isInUserList returns true if movie exists, false otherwise",
+        () async {
       final userLists = MockCollectionReference();
       final queryMock = MockQuery();
       final snapshotMock = MockQuerySnapshot();
@@ -120,12 +122,12 @@ void main() {
           .thenReturn(queryMock);
       when(() => queryMock.get()).thenAnswer((_) async => snapshotMock);
 
-      // True senaryo
+      // Movie exists in list
       when(() => snapshotMock.docs).thenReturn([mockDoc]);
       final isInList = await movieService.isInUserList("movie_1");
       expect(isInList, true);
 
-      // False senaryo
+      // Movie does not exist in list
       when(() => snapshotMock.docs).thenReturn([]);
       final isInListFalse = await movieService.isInUserList("movie_1");
       expect(isInListFalse, false);
