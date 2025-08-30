@@ -1,3 +1,4 @@
+import 'package:chillflix_app/generated/l10n.dart';
 import 'package:chillflix_app/product/models/user_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesCubit, MoviesState>(
-      builder: (context, state) {        
+      builder: (context, state) {
         if (state.userListLoading) {
           return SizedBox(
             height: 190,
@@ -34,7 +35,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Filmleriniz yükleniyor...',
+                    S.of(context).yourMoviesAreLoading,
                     style: AppTextStyles.bodyStyle(
                       color: ColorConstants.greyColor,
                       fontSize: 14,
@@ -63,7 +64,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Bir hata oluştu',
+                      S.of(context).anErrorOccurred,
                       style: AppTextStyles.bodyStyle(
                         color: ColorConstants.redColor,
                         fontSize: 14,
@@ -77,10 +78,11 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorConstants.redColor,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                       ),
                       child: Text(
-                        'Tekrar Dene',
+                        S.of(context).tryAgain,
                         style: AppTextStyles.buttonStyle(fontSize: 12),
                       ),
                     ),
@@ -108,7 +110,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Henüz film eklemedin',
+                      S.of(context).youHaveNotAddedAnyMoviesYet,
                       style: AppTextStyles.bodyStyle(
                         color: ColorConstants.greyColor,
                         fontSize: 16,
@@ -117,7 +119,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Beğendiğin filmleri listene ekle',
+                      S.of(context).addYourFavoriteMoviesToYourList,
                       style: AppTextStyles.bodyStyle(
                         color: ColorConstants.greyColor,
                         fontSize: 12,
@@ -141,7 +143,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
             itemBuilder: (context, index) {
               final userListItem = state.userList[index];
               final cleanUrl = _cleanImageUrl(userListItem.movieImageUrl);
-              
+
               return _MovieListItem(
                 userListItem: userListItem,
                 cleanUrl: cleanUrl,
@@ -149,19 +151,22 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   // Loading state message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${userListItem.movieTitle} kaldırılıyor...'),
+                      content: Text('${userListItem.movieTitle} removing'),
                       backgroundColor: ColorConstants.greyColor,
                       duration: const Duration(seconds: 1),
                     ),
                   );
-                  
+
                   // remove film from user list
-                  await context.read<MoviesCubit>().removeFromUserList(userListItem.id);
-                  
+                  await context
+                      .read<MoviesCubit>()
+                      .removeFromUserList(userListItem.id);
+
                   // Success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${userListItem.movieTitle} listeden kaldırıldı'),
+                      content: Text(
+                          '${userListItem.movieTitle} removed from your list'),
                       backgroundColor: ColorConstants.redColor,
                       duration: const Duration(seconds: 2),
                     ),
@@ -215,7 +220,8 @@ class _MovieListItem extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
-                child: cleanUrl.isNotEmpty && Uri.tryParse(cleanUrl)?.hasScheme == true
+                child: cleanUrl.isNotEmpty &&
+                        Uri.tryParse(cleanUrl)?.hasScheme == true
                     ? Image.network(
                         cleanUrl,
                         width: 120,
@@ -252,7 +258,7 @@ class _MovieListItem extends StatelessWidget {
                       ),
               ),
             ),
-            
+
             // Remove button
             Positioned(
               top: 150,
@@ -285,7 +291,7 @@ class _MovieListItem extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Kaldır',
+                            S.of(context).remove,
                             style: AppTextStyles.buttonStyle(
                               color: ColorConstants.whiteColor,
                               fontSize: 12,
@@ -298,8 +304,6 @@ class _MovieListItem extends StatelessWidget {
                 ),
               ),
             ),
-            
-
           ],
         ),
       ),

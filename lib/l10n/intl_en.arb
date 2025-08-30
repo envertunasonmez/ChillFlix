@@ -24,5 +24,12 @@
   "settings":"Settings",
   "myProfile":"My Profile",
   "changeLanguage":"Change Language",
-  "logOut":"Log out"
+  "logOut":"Log out",
+  "forYou":"For You",
+  "tryAgain":"Try Again",
+  "anErrorOccurred":"An Error Occured",
+  "yourMoviesAreLoading":"Your movies are loading...",
+  "youHaveNotAddedAnyMoviesYet":"You haven't added any movies yet",
+  "addYourFavoriteMoviesToYourList":"Add your favorite movies to your list",
+  "remove":"Remove"
 }

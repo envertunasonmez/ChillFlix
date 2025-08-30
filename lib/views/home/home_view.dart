@@ -21,7 +21,7 @@ class HomeView extends StatelessWidget {
     return Column(
       children: [
         CustomAppBar(
-          title: 'Tuna için',
+          title: S.of(context).forYou,
           actions: [
             AppBarIconButton(icon: Icons.cast, onPressed: () {}),
             AppBarIconButton(icon: Icons.download, onPressed: () {}),
@@ -228,7 +228,8 @@ class _MovieHorizontalList extends StatelessWidget {
           return SizedBox(
             height: size.height * heightFactor,
             child: const Center(
-                child: CircularProgressIndicator(color: ColorConstants.whiteColor)),
+                child: CircularProgressIndicator(
+                    color: ColorConstants.whiteColor)),
           );
         }
 
