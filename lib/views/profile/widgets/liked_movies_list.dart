@@ -15,6 +15,7 @@ class LikedMoviesList extends StatefulWidget {
 }
 
 class _LikedMoviesListState extends State<LikedMoviesList> {
+  /// Image URL cleaning
   String _cleanImageUrl(String imageUrl) {
     return imageUrl.replaceAll('"', '').trim();
   }
@@ -23,6 +24,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesCubit, MoviesState>(
       builder: (context, state) {
+        /// 🔹 Loading State
         if (state.userListLoading) {
           return SizedBox(
             height: 190,
@@ -31,8 +33,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const CircularProgressIndicator(
-                    color: ColorConstants.whiteColor,
-                  ),
+                      color: ColorConstants.whiteColor),
                   const SizedBox(height: 16),
                   Text(
                     S.of(context).yourMoviesAreLoading,
@@ -47,6 +48,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Error State
         if (state.errorMessage != null) {
           return SizedBox(
             height: 190,
@@ -57,11 +59,8 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: ColorConstants.redColor,
-                      size: 32,
-                    ),
+                    Icon(Icons.error_outline,
+                        color: ColorConstants.redColor, size: 32),
                     const SizedBox(height: 8),
                     Text(
                       S.of(context).anErrorOccurred,
@@ -73,9 +72,8 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton(
-                      onPressed: () {
-                        context.read<MoviesCubit>().getUserList();
-                      },
+                      onPressed: () =>
+                          context.read<MoviesCubit>().getUserList(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorConstants.redColor,
                         padding: const EdgeInsets.symmetric(
@@ -93,6 +91,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Empty List State
         if (state.userList.isEmpty) {
           return SizedBox(
             height: 190,
@@ -103,11 +102,8 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.movie_outlined,
-                      color: ColorConstants.greyColor,
-                      size: 32,
-                    ),
+                    Icon(Icons.movie_outlined,
+                        color: ColorConstants.greyColor, size: 32),
                     const SizedBox(height: 12),
                     Text(
                       S.of(context).youHaveNotAddedAnyMoviesYet,
@@ -133,6 +129,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Film List
         return SizedBox(
           height: 190,
           child: ListView.separated(
@@ -148,7 +145,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                 userListItem: userListItem,
                 cleanUrl: cleanUrl,
                 onRemove: () async {
-                  // Loading state message
+                  /// Loading SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${userListItem.movieTitle} removing'),
@@ -157,12 +154,12 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                     ),
                   );
 
-                  // remove film from user list
+                  /// Remove from list
                   await context
                       .read<MoviesCubit>()
                       .removeFromUserList(userListItem.id);
 
-                  // Success message
+                  /// Success SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -211,15 +208,14 @@ class _MovieListItem extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Film image
+            /// 🔹 Film Image
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
                 child: cleanUrl.isNotEmpty &&
                         Uri.tryParse(cleanUrl)?.hasScheme == true
                     ? Image.network(
@@ -227,14 +223,12 @@ class _MovieListItem extends StatelessWidget {
                         width: 120,
                         height: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            AssetsConstants.banner,
-                            width: 120,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          );
-                        },
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          AssetsConstants.banner,
+                          width: 120,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
@@ -259,7 +253,7 @@ class _MovieListItem extends StatelessWidget {
               ),
             ),
 
-            // Remove button
+            /// 🔹 Remove button
             Positioned(
               top: 150,
               left: 0,
@@ -268,27 +262,22 @@ class _MovieListItem extends StatelessWidget {
               child: Container(
                 decoration: const BoxDecoration(
                   color: ColorConstants.redColor,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(12),
-                  ),
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(12)),
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: onRemove,
                     borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(12),
-                    ),
+                        bottom: Radius.circular(12)),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.remove,
-                            size: 16,
-                            color: ColorConstants.whiteColor,
-                          ),
+                          const Icon(Icons.remove,
+                              size: 16, color: ColorConstants.whiteColor),
                           const SizedBox(width: 4),
                           Text(
                             S.of(context).remove,

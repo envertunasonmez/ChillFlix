@@ -26,7 +26,8 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    // Load user list on init
+
+    /// Load user's movie list when profile is opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MoviesCubit>().getUserList();
     });
@@ -36,23 +37,31 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.blackColor,
+
+      /// Pull-to-refresh to reload user list
       body: RefreshIndicator(
         color: ColorConstants.redColor,
         backgroundColor: ColorConstants.blackColor,
         onRefresh: () async {
-          // Refresh user list
           await context.read<MoviesCubit>().getUserList();
         },
+
+        /// Profile scrollable content
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// Custom top app bar
               const _CustomAppBar(),
               const SizedBox(height: 24),
+
+              /// Profile header (avatar, username, etc.)
               const Center(child: ProfileHeader()),
               const SizedBox(height: 24),
+
+              /// Notifications section
               const NotificationRow(),
               const SizedBox(height: 16),
               NotificationItem(
@@ -62,8 +71,12 @@ class _ProfileViewState extends State<ProfileView> {
                 date: "20 Aug",
               ),
               const SizedBox(height: 32),
+
+              /// Downloaded content row
               const DownloadedRow(),
               const SizedBox(height: 32),
+
+              /// Liked movies & series section
               Text(
                 S.of(context).likedSeriesAndFilms,
                 style: AppTextStyles.bodyStyle(
@@ -82,9 +95,11 @@ class _ProfileViewState extends State<ProfileView> {
   }
 }
 
+/// Custom AppBar for Profile Screen
 class _CustomAppBar extends StatelessWidget {
   const _CustomAppBar();
 
+  /// Open bottom sheet for profile actions/settings
   void _openBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -104,12 +119,15 @@ class _CustomAppBar extends StatelessWidget {
         AppBarIconButton(icon: Icons.cast, onPressed: () {}),
         AppBarIconButton(icon: Icons.search, onPressed: () {}),
         AppBarIconButton(
-            icon: Icons.menu, onPressed: () => _openBottomSheet(context)),
+          icon: Icons.menu,
+          onPressed: () => _openBottomSheet(context),
+        ),
       ],
     );
   }
 }
 
+/// A reusable tile for the bottom sheet
 class _BottomSheetTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -134,6 +152,7 @@ class _BottomSheetTile extends StatelessWidget {
   }
 }
 
+/// Bottom sheet that opens from profile screen
 class _ProfileBottomSheet extends StatelessWidget {
   const _ProfileBottomSheet();
 
@@ -169,6 +188,7 @@ class _ProfileBottomSheet extends StatelessWidget {
     );
   }
 
+  /// Show dialog for selecting language
   void _showLanguageSelector(BuildContext context) {
     showDialog(
       context: context,
@@ -179,6 +199,8 @@ class _ProfileBottomSheet extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           titlePadding: EdgeInsets.zero,
+
+          /// Dialog header
           title: Container(
             decoration: BoxDecoration(
               color: ColorConstants.redColor,
@@ -190,7 +212,7 @@ class _ProfileBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Center(
               child: Text(
-                "Dil Seçimi",
+                "Select Language",
                 style: AppTextStyles.bodyStyle(
                   color: ColorConstants.blackColor,
                   fontWeight: FontWeight.w900,
@@ -199,9 +221,12 @@ class _ProfileBottomSheet extends StatelessWidget {
               ),
             ),
           ),
+
+          /// Dialog content → available languages
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              /// Turkish option
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -225,6 +250,8 @@ class _ProfileBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
+
+              /// English option
               Center(
                 child: GestureDetector(
                   onTap: () {
