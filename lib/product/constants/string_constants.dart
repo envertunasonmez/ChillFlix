@@ -19,4 +19,5 @@ class StringConstants {
   static const String notifications = 'Bildirimler';
   static const String downloads = 'İndirilenler';
   static const String share = 'Paylaş';
+  static const String appName= 'ChillFlix';
 }
