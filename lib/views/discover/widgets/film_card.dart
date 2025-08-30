@@ -5,7 +5,7 @@ import 'package:chillflix_app/product/constants/color_constants.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
 import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:chillflix_app/cubit/movies/movies_cubit.dart';
-import 'package:chillflix_app/product/models/movie_model.dart';
+import 'package:chillflix_app/data/models/movie_model.dart';
 
 class FilmCardSection extends StatelessWidget {
   final Map<String, String> category;

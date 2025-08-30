@@ -1,5 +1,5 @@
 import 'package:chillflix_app/generated/l10n.dart';
-import 'package:chillflix_app/product/models/user_list_model.dart';
+import 'package:chillflix_app/data/models/user_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';

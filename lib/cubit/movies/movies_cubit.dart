@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../product/services/movie_service.dart';
-import '../../product/models/movie_model.dart';
-import '../../product/models/user_list_model.dart';
+import '../../data/services/movie_service.dart';
+import '../../data/models/movie_model.dart';
+import '../../data/models/user_list_model.dart';
 
 part 'movies_state.dart';
 
