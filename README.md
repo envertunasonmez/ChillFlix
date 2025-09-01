@@ -182,9 +182,10 @@ flutter run
 
 ## Screenshot
 
-<img src="assets/screenshots/splash_view.png" width="300" />
-<img src="assets/screenshots/home_view_1.png" width="300" />
-<img src="assets/screenshots/home_view_2.png" width="300" />
+|  |  |  |
+|--|--|--|
+| <img src="assets/screenshots/splash_view.png" width="300" /> | <img src="assets/screenshots/home_view_1.png" width="300" /> | <img src="assets/screenshots/home_view_2.png" width="300" /> |
+
 <img src="assets/screenshots/new_and_popular_1.png" width="300" />
 <img src="assets/screenshots/new_and_popular_2.png" width="300" />
 <img src="assets/screenshots/add_list.png" width="300" />
