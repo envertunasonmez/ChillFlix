@@ -18,9 +18,9 @@ class EmailField extends StatelessWidget {
           onChanged: context.read<AuthCubit>().updateEmail,
           keyboardType: TextInputType.emailAddress,
           style: AppTextStyles.buttonStyle(color: ColorConstants.whiteColor),
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Email',
-            labelStyle: TextStyle(color: ColorConstants.whiteColor),
+            labelStyle: AppTextStyles.bodyStyle(color: ColorConstants.whiteColor, fontSize: 16),
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: ColorConstants.whiteColor)),
             focusedBorder: OutlineInputBorder(
@@ -53,10 +53,10 @@ class PasswordField extends StatelessWidget {
           initialValue: state.password,
           onChanged: context.read<AuthCubit>().updatePassword,
           obscureText: state.isPasswordObscured,
-          style: TextStyle(color: ColorConstants.whiteColor),
+          style: AppTextStyles.buttonStyle(color: ColorConstants.whiteColor),
           decoration: InputDecoration(
             labelText: 'Şifre',
-            labelStyle: TextStyle(color: ColorConstants.whiteColor),
+            labelStyle: AppTextStyles.bodyStyle(color: ColorConstants.whiteColor, fontSize: 16),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: ColorConstants.greyColor)),
             focusedBorder: const OutlineInputBorder(
@@ -100,7 +100,7 @@ class ConfirmPasswordField extends StatelessWidget {
           style: const TextStyle(color: ColorConstants.whiteColor),
           decoration: InputDecoration(
             labelText: 'Şifre (Tekrar)',
-            labelStyle: const TextStyle(color: ColorConstants.whiteColor),
+            labelStyle:  AppTextStyles.bodyStyle(color: ColorConstants.whiteColor),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: ColorConstants.greyColor)),
             focusedBorder: const OutlineInputBorder(
