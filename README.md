@@ -1,66 +1,66 @@
 # ChillFlix - Netflix Clone
 
-Firebase entegrasyonu ile geliştirilmiş Netflix benzeri film ve dizi izleme uygulaması.
+A Netflix-like movie and TV series streaming app developed with Firebase integration.
 
-## Özellikler
+## Features
 
-- 🔐 Firebase Authentication ile kullanıcı girişi
-- 🎬 Kategorilere göre film ve dizi listeleme
-- ⭐ Most Wanted, Only on ChillFlix, Coming Soon, Everyone Watch These kategorileri
-- 📊 Top 10 Films ve Top 10 Series listeleri
-- 📋 Kullanıcı kişisel listesi (Listem)
-- 🌍 Türkçe ve İngilizce dil desteği
-- 📱 Responsive tasarım
+- 🔐 User authentication with Firebase Authentication
+- 🎬 Movie and series listing by categories
+- ⭐ Categories: Most Wanted, Only on ChillFlix, Coming Soon, Everyone Watch These
+- 📊 Top 10 Films and Top 10 Series lists
+- 📋 User personal list ("My List")
+- 🌍 Turkish and English language support
+- 📱 Responsive design
 
-## Firebase Kurulumu
+## Firebase Setup
 
-### 1. Firebase Projesi Oluşturma
+### 1. Create a Firebase Project
 
-1. [Firebase Console](https://console.firebase.google.com/)'a gidin
-2. "Add project" ile yeni proje oluşturun
-3. Proje adını "chillflix-app" olarak belirleyin
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Click "Add project" to create a new project
+3. Name your project "chillflix-app"
 
-### 2. Authentication Kurulumu
+### 2. Set Up Authentication
 
-1. Sol menüden "Authentication" seçin
-2. "Get started" butonuna tıklayın
-3. "Sign-in method" sekmesinde "Email/Password" etkinleştirin
-4. "Enable" yapın
+1. Select "Authentication" from the left menu
+2. Click "Get started"
+3. In the "Sign-in method" tab, enable "Email/Password"
+4. Click "Enable"
 
-### 3. Firestore Database Kurulumu
+### 3. Set Up Firestore Database
 
-1. Sol menüden "Firestore Database" seçin
-2. "Create database" butonuna tıklayın
-3. "Start in test mode" seçin
-4. Bölge olarak "europe-west1" seçin
+1. Select "Firestore Database" from the left menu
+2. Click "Create database"
+3. Choose "Start in test mode"
+4. Select region "europe-west1"
 
-### 4. Flutter Uygulamasına Firebase Ekleme
+### 4. Add Firebase to Flutter App
 
-1. Firebase Console'da "Project settings" > "General" sekmesine gidin
-2. "Your apps" bölümünde "Android" simgesine tıklayın
+1. In Firebase Console, go to "Project settings" > "General"
+2. Under "Your apps", click the "Android" icon
 3. Android package name: `com.example.chillflix_app`
-4. `google-services.json` dosyasını indirin
-5. İndirilen dosyayı `android/app/` klasörüne kopyalayın
+4. Download the `google-services.json` file
+5. Copy the file to your `android/app/` directory
 
-6. iOS için:
-   - "iOS" simgesine tıklayın
+6. For iOS:
+   - Click the "iOS" icon
    - Bundle ID: `com.example.chillflixApp`
-   - `GoogleService-Info.plist` dosyasını indirin
-   - iOS klasörüne ekleyin
+   - Download `GoogleService-Info.plist`
+   - Add it to your iOS directory
 
-### 5. Firestore Veri Ekleme
+### 5. Add Firestore Data
 
-`firebase_data_setup.dart` dosyasındaki örnek verileri Firestore'a ekleyin:
+Add sample data from `firebase_data_setup.dart` to Firestore:
 
 1. Firestore Database > Data > "Start collection"
 2. Collection ID: `movies`
-3. Her bir film için ayrı document oluşturun
-4. Örnek veriler:
+3. Create a separate document for each movie
+4. Example data:
 
 ```json
 {
   "title": "The Dark Knight",
-  "description": "Batman'in Joker ile mücadelesi",
+  "description": "Batman's fight against the Joker",
   "imageUrl": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
   "category": "most_wanted",
   "rating": 9.0,
@@ -75,21 +75,21 @@ Firebase entegrasyonu ile geliştirilmiş Netflix benzeri film ve dizi izleme uy
 }
 ```
 
-### 6. Firestore Kuralları
+### 6. Firestore Rules
 
-Firestore Database > Rules bölümüne şu kuralları ekleyin:
+Go to Firestore Database > Rules and add:
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Film verilerini herkes okuyabilir
+    // Anyone can read movie data
     match /movies/{document} {
       allow read: if true;
       allow write: if request.auth != null;
     }
     
-    // Kullanıcı listesi sadece kendi kullanıcısı okuyabilir/yazabilir
+    // User list is only accessible by its owner
     match /userLists/{document} {
       allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
     }
@@ -97,38 +97,38 @@ service cloud.firestore {
 }
 ```
 
-## Kategoriler
+## Categories
 
 ### 1. Most Wanted
-- En popüler ve yüksek puanlı filmler
+- Most popular and highly rated movies
 - `category: "most_wanted"`
 
 ### 2. Only on ChillFlix
-- Platform özel içerikler
+- Platform exclusive content
 - `category: "only_on_chillflix"`
 
 ### 3. Coming Soon
-- Yakında gelecek içerikler
+- Upcoming content
 - `category: "coming_soon"`
 
 ### 4. Everyone Watch These
-- Herkesin izlemesi gereken içerikler
+- Must-watch content for everyone
 - `category: "everyone_watch_these"`
 
 ### 5. Top 10 Films
-- En iyi 10 film (isSeries: false)
-- Rating'e göre sıralanır
+- Top 10 movies (`isSeries: false`)
+- Sorted by rating
 
 ### 6. Top 10 Series
-- En iyi 10 dizi (isSeries: true)
-- Rating'e göre sıralanır
+- Top 10 series (`isSeries: true`)
+- Sorted by rating
 
-## Listem Özelliği
+## My List Feature
 
-- Kullanıcılar film kartlarındaki "+" butonuna basarak filmi listesine ekleyebilir
-- Profil sayfasında "Listem" bölümünde eklenen filmler görünür
-- "-" butonu ile listeden çıkarabilir
-- Her kullanıcının kendi listesi ayrı tutulur
+- Users can add movies to their list by clicking the "+" button on movie cards
+- Added movies appear in the "My List" section on the profile page
+- Remove movies from the list with the "-" button
+- Each user's list is stored separately
 
 ## Firebase Collections
 
@@ -162,17 +162,17 @@ service cloud.firestore {
 }
 ```
 
-## Kurulum
+## Installation
 
 ```bash
-# Bağımlılıkları yükle
+# Install dependencies
 flutter pub get
 
-# Uygulamayı çalıştır
+# Run the app
 flutter run
 ```
 
-## Teknolojiler
+## Technologies
 
 - Flutter
 - Firebase (Authentication, Firestore)
@@ -180,6 +180,19 @@ flutter run
 - Flutter Localizations
 - Google Fonts
 
-## Lisans
+## Screenshot
 
-Bu proje eğitim amaçlı geliştirilmiştir.
+<img src="assets/screenshots/splash_view.png" width="300" />
+<img src="assets/screenshots/home_view_1.png" width="300" />
+<img src="assets/screenshots/home_view_2.png" width="300" />
+<img src="assets/screenshots/new_and_popular_1.png" width="300" />
+<img src="assets/screenshots/new_and_popular_2.png" width="300" />
+<img src="assets/screenshots/add_list.png" width="300" />
+<img src="assets/screenshots/profile_view.png" width="300" />
+<img src="assets/screenshots/remove_from_list.png" width="300" />
+<img src="assets/screenshots/set_language.png" width="300" />
+
+
+## License
+
+This project is developed for educational purposes.
