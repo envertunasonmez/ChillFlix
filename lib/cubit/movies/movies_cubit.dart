@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../product/services/movie_service.dart';
-import '../../product/models/movie_model.dart';
-import '../../product/models/user_list_model.dart';
+import '../../data/services/movie_service.dart';
+import '../../data/models/movie_model.dart';
+import '../../data/models/user_list_model.dart';
 
 part 'movies_state.dart';
 
@@ -71,19 +71,16 @@ class MoviesCubit extends Cubit<MoviesState> {
     }
   }
 
-  /// Film listeye ekle/çıkar ve sonucu döndür
+  /// Add or remove a movie from the user's list
   Future<bool> toggleUserList(String movieId, String movieTitle, String movieImageUrl) async {
     try {
-      print("toggleUserList başladı - movieId: $movieId");
       final result = await _movieService.addToUserList(movieId, movieTitle, movieImageUrl);
-      print("toggleUserList sonucu: $result");
       
-      // User list'i otomatik güncelle
+      // Refresh the user list after toggling
       await getUserList();
       
       return result;
     } catch (e) {
-      print("toggleUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString()));
       throw e;
     }
@@ -92,12 +89,9 @@ class MoviesCubit extends Cubit<MoviesState> {
   Future<void> getUserList() async {
     emit(state.copyWith(userListLoading: true, errorMessage: null));
     try {
-      print("getUserList başladı");
       final userList = await _movieService.getUserList();
-      print("getUserList tamamlandı, ${userList.length} film bulundu");
       emit(state.copyWith(userList: userList, userListLoading: false));
     } catch (e) {
-      print("getUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString(), userListLoading: false));
     }
   }
@@ -105,24 +99,19 @@ class MoviesCubit extends Cubit<MoviesState> {
   Future<bool> isInUserList(String movieId) async {
     try {
       final result = await _movieService.isInUserList(movieId);
-      print("isInUserList - movieId: $movieId, sonuç: $result");
       return result;
     } catch (e) {
-      print("isInUserList hatası: $e");
       return false;
     }
   }
 
   Future<void> removeFromUserList(String listId) async {
     try {
-      print("removeFromUserList başladı - listId: $listId");
       final success = await _movieService.removeFromUserList(listId);
       if (success) {
-        print("Film başarıyla kaldırıldı, user list güncelleniyor");
         await getUserList();
       }
     } catch (e) {
-      print("removeFromUserList hatası: $e");
       emit(state.copyWith(errorMessage: e.toString()));
     }
   }

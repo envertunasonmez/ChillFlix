@@ -1,4 +1,5 @@
 import 'package:chillflix_app/generated/l10n.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:chillflix_app/product/constants/color_constants.dart';
 
@@ -90,14 +91,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: isSelected ? ColorConstants.whiteColor : Colors.grey,
+                color: isSelected
+                    ? ColorConstants.whiteColor
+                    : ColorConstants.greyColor,
                 size: size.width * 0.06,
               ),
               SizedBox(height: size.height * 0.004),
               Text(
                 label,
-                style: TextStyle(
-                  color: isSelected ? ColorConstants.whiteColor : Colors.grey,
+                style: AppTextStyles.buttonStyle(
+                  color: isSelected
+                      ? ColorConstants.whiteColor
+                      : ColorConstants.greyColor,
                   fontSize: size.width * 0.03,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),

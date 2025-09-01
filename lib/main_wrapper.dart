@@ -17,7 +17,7 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   int _currentIndex = 0;
 
-  // Farklı ekranlarınızı buraya ekleyin
+  // Add your screens here
   final List<Widget> _screens = [
     const HomeView(),
     DiscoverView(),

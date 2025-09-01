@@ -7,10 +7,10 @@ class StringConstants {
   static const String onlyChillflix = "Sadece Chillflix'te";
   static const String mostWanted = 'En Çok Arananlar';
   static const String seeAll = 'Tümünü Görüntüle';
-  static const String comingSoon = 'Çok Yakında';
-  static const String watchingEveryoneThese = 'Herkes Bunları İzliyor';
-  static const String topTenSeries = 'Top 10 Diziler';
-  static const String topTenFilms = 'Top 10 Filmler';
+  static const String comingSoon = 'Coming Soon';
+  static const String watchingEveryoneThese = 'Everyone\'s Watching';
+  static const String topTenSeries = 'Top 10 Series';
+  static const String topTenFilms = 'Top 10 Films';
   static const String newAndPopular = 'Yeni ve Popüler';
   static const String profile = 'Profil';
   static const String home = 'Ana Sayfa';
@@ -19,4 +19,5 @@ class StringConstants {
   static const String notifications = 'Bildirimler';
   static const String downloads = 'İndirilenler';
   static const String share = 'Paylaş';
+  static const String appName= 'ChillFlix';
 }

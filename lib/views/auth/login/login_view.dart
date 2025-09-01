@@ -1,3 +1,6 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/constants/string_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
@@ -17,7 +20,7 @@ class LoginView extends StatelessWidget {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            backgroundColor: Colors.red,
+            backgroundColor: ColorConstants.redColor,
             content: Text(state.errorMessage!),
           ),
         );
@@ -30,9 +33,9 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: ColorConstants.blackColor,
       body: SafeArea(
         child: BlocListener<AuthCubit, AuthState>(
           listener: _onListen,
@@ -42,17 +45,19 @@ class LoginView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('ChillFlix',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                          color: Colors.red, fontWeight: FontWeight.bold)),
+                  Text(StringConstants.appName,
+                      style: AppTextStyles.bodyStyle(
+                          color: ColorConstants.blackColor,
+                          fontWeight: FontWeight.bold)),
                   const SizedBox(height: 24),
-                   LoginForm(),
+                  LoginForm(),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () => _goToRegister(context),
-                    child: const Text(
+                    child: Text(
                       'Hesabın yok mu? Kayıt ol',
-                      style: TextStyle(color: Colors.white70),
+                      style: AppTextStyles.bodyStyle(
+                          color: ColorConstants.whiteColor.withOpacity(0.7)),
                     ),
                   ),
                 ],

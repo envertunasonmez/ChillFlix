@@ -1,3 +1,5 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
@@ -15,19 +17,20 @@ class EmailField extends StatelessWidget {
           initialValue: state.email,
           onChanged: context.read<AuthCubit>().updateEmail,
           keyboardType: TextInputType.emailAddress,
-          style: const TextStyle(color: Colors.white),
+          style: AppTextStyles.buttonStyle(color: ColorConstants.whiteColor),
           decoration: const InputDecoration(
             labelText: 'Email',
-            labelStyle: TextStyle(color: Colors.white70),
-            enabledBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
-            focusedBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+            labelStyle: TextStyle(color: ColorConstants.whiteColor),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.whiteColor)),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.redColor)),
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) return 'Email gerekli';
             final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-            if (!emailRegex.hasMatch(value.trim())) return 'Geçerli bir email girin';
+            if (!emailRegex.hasMatch(value.trim()))
+              return 'Geçerli bir email girin';
             return null;
           },
         );
@@ -43,24 +46,27 @@ class PasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       buildWhen: (p, c) =>
-          p.password != c.password || p.isPasswordObscured != c.isPasswordObscured,
+          p.password != c.password ||
+          p.isPasswordObscured != c.isPasswordObscured,
       builder: (context, state) {
         return TextFormField(
           initialValue: state.password,
           onChanged: context.read<AuthCubit>().updatePassword,
           obscureText: state.isPasswordObscured,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: ColorConstants.whiteColor),
           decoration: InputDecoration(
             labelText: 'Şifre',
-            labelStyle: const TextStyle(color: Colors.white70),
-            enabledBorder:
-                const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
-            focusedBorder:
-                const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+            labelStyle: TextStyle(color: ColorConstants.whiteColor),
+            enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.greyColor)),
+            focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.redColor)),
             suffixIcon: IconButton(
               icon: Icon(
-                state.isPasswordObscured ? Icons.visibility : Icons.visibility_off,
-                color: Colors.white70,
+                state.isPasswordObscured
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: ColorConstants.whiteColor,
               ),
               onPressed: context.read<AuthCubit>().togglePasswordObscure,
             ),
@@ -91,18 +97,20 @@ class ConfirmPasswordField extends StatelessWidget {
           initialValue: state.confirmPassword,
           onChanged: context.read<AuthCubit>().updateConfirmPassword,
           obscureText: state.isConfirmObscured,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: ColorConstants.whiteColor),
           decoration: InputDecoration(
             labelText: 'Şifre (Tekrar)',
-            labelStyle: const TextStyle(color: Colors.white70),
-            enabledBorder:
-                const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
-            focusedBorder:
-                const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+            labelStyle: const TextStyle(color: ColorConstants.whiteColor),
+            enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.greyColor)),
+            focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.redColor)),
             suffixIcon: IconButton(
               icon: Icon(
-                state.isConfirmObscured ? Icons.visibility : Icons.visibility_off,
-                color: Colors.white70,
+                state.isConfirmObscured
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: ColorConstants.whiteColor,
               ),
               onPressed: context.read<AuthCubit>().toggleConfirmObscure,
             ),

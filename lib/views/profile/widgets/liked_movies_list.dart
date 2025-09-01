@@ -1,5 +1,5 @@
 import 'package:chillflix_app/generated/l10n.dart';
-import 'package:chillflix_app/product/models/user_list_model.dart';
+import 'package:chillflix_app/data/models/user_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/product/constants/assets_constants.dart';
@@ -15,6 +15,7 @@ class LikedMoviesList extends StatefulWidget {
 }
 
 class _LikedMoviesListState extends State<LikedMoviesList> {
+  /// Image URL cleaning
   String _cleanImageUrl(String imageUrl) {
     return imageUrl.replaceAll('"', '').trim();
   }
@@ -23,8 +24,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesCubit, MoviesState>(
       builder: (context, state) {
-        print("LikedMoviesList build - loading: ${state.userListLoading}, list length: ${state.userList.length}");
-        
+        /// 🔹 Loading State
         if (state.userListLoading) {
           return SizedBox(
             height: 190,
@@ -33,13 +33,12 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const CircularProgressIndicator(
-                    color: ColorConstants.whiteColor,
-                  ),
+                      color: ColorConstants.whiteColor),
                   const SizedBox(height: 16),
                   Text(
-                    'Filmleriniz yükleniyor...',
+                    S.of(context).yourMoviesAreLoading,
                     style: AppTextStyles.bodyStyle(
-                      color: Colors.grey,
+                      color: ColorConstants.greyColor,
                       fontSize: 14,
                     ),
                   ),
@@ -49,6 +48,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Error State
         if (state.errorMessage != null) {
           return SizedBox(
             height: 190,
@@ -59,31 +59,28 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 32,
-                    ),
+                    Icon(Icons.error_outline,
+                        color: ColorConstants.redColor, size: 32),
                     const SizedBox(height: 8),
                     Text(
-                      'Bir hata oluştu',
+                      S.of(context).anErrorOccurred,
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.red,
+                        color: ColorConstants.redColor,
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton(
-                      onPressed: () {
-                        context.read<MoviesCubit>().getUserList();
-                      },
+                      onPressed: () =>
+                          context.read<MoviesCubit>().getUserList(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorConstants.redColor,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                       ),
                       child: Text(
-                        'Tekrar Dene',
+                        S.of(context).tryAgain,
                         style: AppTextStyles.buttonStyle(fontSize: 12),
                       ),
                     ),
@@ -94,6 +91,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Empty List State
         if (state.userList.isEmpty) {
           return SizedBox(
             height: 190,
@@ -104,25 +102,22 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.movie_outlined,
-                      color: Colors.grey,
-                      size: 32,
-                    ),
+                    Icon(Icons.movie_outlined,
+                        color: ColorConstants.greyColor, size: 32),
                     const SizedBox(height: 12),
                     Text(
-                      'Henüz film eklemedin',
+                      S.of(context).youHaveNotAddedAnyMoviesYet,
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.grey,
+                        color: ColorConstants.greyColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Beğendiğin filmleri listene ekle',
+                      S.of(context).addYourFavoriteMoviesToYourList,
                       style: AppTextStyles.bodyStyle(
-                        color: Colors.grey[600],
+                        color: ColorConstants.greyColor,
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
@@ -134,6 +129,7 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
           );
         }
 
+        /// 🔹 Film List
         return SizedBox(
           height: 190,
           child: ListView.separated(
@@ -144,29 +140,30 @@ class _LikedMoviesListState extends State<LikedMoviesList> {
             itemBuilder: (context, index) {
               final userListItem = state.userList[index];
               final cleanUrl = _cleanImageUrl(userListItem.movieImageUrl);
-              
-              print("Rendering user list item: ${userListItem.movieTitle}");
 
               return _MovieListItem(
                 userListItem: userListItem,
                 cleanUrl: cleanUrl,
                 onRemove: () async {
-                  // Loading state göster
+                  /// Loading SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${userListItem.movieTitle} kaldırılıyor...'),
+                      content: Text('${userListItem.movieTitle} removing'),
                       backgroundColor: ColorConstants.greyColor,
                       duration: const Duration(seconds: 1),
                     ),
                   );
-                  
-                  // Film kaldır
-                  await context.read<MoviesCubit>().removeFromUserList(userListItem.id);
-                  
-                  // Success mesajı
+
+                  /// Remove from list
+                  await context
+                      .read<MoviesCubit>()
+                      .removeFromUserList(userListItem.id);
+
+                  /// Success SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${userListItem.movieTitle} listeden kaldırıldı'),
+                      content: Text(
+                          '${userListItem.movieTitle} removed from your list'),
                       backgroundColor: ColorConstants.redColor,
                       duration: const Duration(seconds: 2),
                     ),
@@ -203,7 +200,7 @@ class _MovieListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: ColorConstants.blackColor.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -211,35 +208,33 @@ class _MovieListItem extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Film resmi
+            /// 🔹 Film Image
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
-                child: cleanUrl.isNotEmpty && Uri.tryParse(cleanUrl)?.hasScheme == true
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                child: cleanUrl.isNotEmpty &&
+                        Uri.tryParse(cleanUrl)?.hasScheme == true
                     ? Image.network(
                         cleanUrl,
                         width: 120,
                         height: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            AssetsConstants.banner,
-                            width: 120,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          );
-                        },
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          AssetsConstants.banner,
+                          width: 120,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
                             width: 120,
                             height: 150,
-                            color: Colors.grey[800],
+                            color: ColorConstants.greyColor,
                             child: const Center(
                               child: CircularProgressIndicator(
                                 color: ColorConstants.whiteColor,
@@ -257,8 +252,8 @@ class _MovieListItem extends StatelessWidget {
                       ),
               ),
             ),
-            
-            // Remove butonu
+
+            /// 🔹 Remove button
             Positioned(
               top: 150,
               left: 0,
@@ -267,30 +262,25 @@ class _MovieListItem extends StatelessWidget {
               child: Container(
                 decoration: const BoxDecoration(
                   color: ColorConstants.redColor,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(12),
-                  ),
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(12)),
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: onRemove,
                     borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(12),
-                    ),
+                        bottom: Radius.circular(12)),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.remove,
-                            size: 16,
-                            color: ColorConstants.whiteColor,
-                          ),
+                          const Icon(Icons.remove,
+                              size: 16, color: ColorConstants.whiteColor),
                           const SizedBox(width: 4),
                           Text(
-                            'Kaldır',
+                            S.of(context).remove,
                             style: AppTextStyles.buttonStyle(
                               color: ColorConstants.whiteColor,
                               fontSize: 12,
@@ -303,8 +293,6 @@ class _MovieListItem extends StatelessWidget {
                 ),
               ),
             ),
-            
-
           ],
         ),
       ),

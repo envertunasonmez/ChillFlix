@@ -1,3 +1,5 @@
+import 'package:chillflix_app/product/constants/color_constants.dart';
+import 'package:chillflix_app/product/init/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chillflix_app/cubit/auth/auth_cubit.dart';
@@ -15,14 +17,15 @@ class EmailField extends StatelessWidget {
           initialValue: state.email,
           onChanged: context.read<AuthCubit>().updateEmail,
           keyboardType: TextInputType.emailAddress,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          style: AppTextStyles.headLineStyle(color: ColorConstants.whiteColor),
+          decoration: InputDecoration(
             labelText: 'Email',
-            labelStyle: TextStyle(color: Colors.white70),
+            labelStyle:
+                AppTextStyles.bodyStyle(color: ColorConstants.whiteColor),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white24)),
+                borderSide: BorderSide(color: ColorConstants.whiteColor)),
             focusedBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                OutlineInputBorder(borderSide: BorderSide(color: ColorConstants.redColor)),
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) return 'Email gerekli';

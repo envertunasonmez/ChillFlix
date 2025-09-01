@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'film_card.dart';
 
-// ... (imports)
-
 class FilmList extends StatefulWidget {
   final ScrollController scrollController;
   final List<GlobalKey> categoryKeys;

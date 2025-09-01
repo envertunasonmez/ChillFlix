@@ -24,5 +24,12 @@
   "settings":"Ayarlar",
   "myProfile":"Profilim",
   "changeLanguage":"Dil Seç",
-  "logOut":"Çıkış Yap"
+  "logOut":"Çıkış Yap",
+  "forYou":"Senin için",
+  "tryAgain":"Tekrar Deneyin",
+  "anErrorOccurred":"Bir Hata Oluştu",
+  "yourMoviesAreLoading":"Filmleriniz yükleniyor...",
+  "youHaveNotAddedAnyMoviesYet":"Henüz film eklemedin",
+  "addYourFavoriteMoviesToYourList":"Beğendiğin filmleri listene ekle",
+  "remove":"Kaldır"
 }

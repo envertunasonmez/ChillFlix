@@ -32,7 +32,7 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 2),
-            const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+            const Icon(Icons.keyboard_arrow_down, color: ColorConstants.whiteColor),
           ],
         ),
       ],
