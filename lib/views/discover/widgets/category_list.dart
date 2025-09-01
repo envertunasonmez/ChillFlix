@@ -41,7 +41,7 @@ class CategoryList extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("${category['emoji']} ",
-                    style: const TextStyle(fontSize: 16)),
+                    style: AppTextStyles.buttonStyle(fontSize: 16)),
                 Text(category['title']!, style: AppTextStyles.buttonStyle()),
               ],
             ),
